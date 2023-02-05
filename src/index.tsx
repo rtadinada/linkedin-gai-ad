@@ -1,4 +1,6 @@
+import BeakerImage from "common/images/beaker.svg";
 import Button from "components/Button/Button";
+import { getResourceUrl } from "lib/chrome-utils";
 import React from "react";
 import { createRoot } from "react-dom/client";
 
@@ -28,11 +30,13 @@ appRoot.render(
 
 const buttonContainer = document.createElement("div");
 buttonContainer.id = "gai-open-button-cnt";
+buttonContainer.style.margin = "4px";
 
 const reportingBar = document
     .getElementsByClassName("reporting-actions-bar__actions-container")
     .item(0);
-reportingBar?.prepend(buttonContainer);
+const buttonCluster = reportingBar?.children.item(0);
+buttonCluster?.prepend(buttonContainer);
 
 const buttonRoot = createRoot(buttonContainer);
 buttonRoot.render(
@@ -41,8 +45,9 @@ buttonRoot.render(
             onClick={() => {
                 window.App.setState({ open: true });
             }}
+            icon={getResourceUrl(BeakerImage)}
         >
-            Click Me
+            Generate Ads
         </Button>
     </React.StrictMode>
 );

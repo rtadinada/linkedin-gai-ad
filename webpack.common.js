@@ -24,7 +24,7 @@ const config = {
                             modules: true,
                         },
                     },
-                    'sass-loader'
+                    "sass-loader",
                 ],
             },
             {
