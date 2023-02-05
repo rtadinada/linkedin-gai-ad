@@ -6,6 +6,10 @@
         "allowSyntheticDefaultImports": true,
         "strict": true,
         "sourceMap": true,
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "baseUrl": "src",
+        "paths": {
+          "lib/*": ["lib/*"]
+        }
     }
 }

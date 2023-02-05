@@ -1,9 +1,12 @@
+import CopyWebpackPlugin from "copy-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 import * as path from "path";
 import { fileURLToPath } from "url";
 
 const fileName = fileURLToPath(import.meta.url);
 const dirName = path.dirname(fileName);
+
+const buildDir = path.resolve(dirName, "dist");
 
 const config = {
     module: {
@@ -37,17 +40,30 @@ const config = {
     },
     resolve: {
         extensions: [".ts", ".tsx"],
+        alias: {
+            lib: path.resolve(dirName, "src/lib")
+        }
     },
     plugins: [
         new ForkTsCheckerWebpackPlugin({
             async: false,
         }),
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: "src/manifest.json",
+                    to: buildDir,
+                    force: true,
+                },
+            ],
+        }),
     ],
     output: {
         filename: "content.js",
-        path: path.resolve(dirName, "dist"),
+        path: buildDir,
         assetModuleFilename: "assets/[hash][ext][query]",
-        // clean: true,
+        publicPath: '',
+        clean: true,
     },
 };
 

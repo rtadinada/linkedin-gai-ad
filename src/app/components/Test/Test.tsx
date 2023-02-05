@@ -1,13 +1,14 @@
 import React from "react";
 
+import { getResourceUrl } from "lib/chrome-utils";
 import style from "./Test.css";
 import Image from "./Test.svg";
 
 export default function Test(): JSX.Element {
     return (
-        <div>
+        <div className={style.cover}>
             <div className={style.test}>Test</div>
-            <img src={Image} />
+            <img src={getResourceUrl(Image)} />
         </div>
     );
 }

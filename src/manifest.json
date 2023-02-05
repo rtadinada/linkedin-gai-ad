@@ -1,0 +1,18 @@
+{
+    "manifest_version": 3,
+    "name": "LinkedIn AI Ad Creator",
+    "version": "0.0.1",
+    "description": "A Chrome extension which uses generative AI to create LinkedIn ads",
+    "content_scripts": [
+        {
+            "js": ["content.js"],
+            "matches": [
+                "https://www.linkedin.com/campaignmanager/accounts/*/campaigns?campaignGroupIds=*"
+            ]
+        }
+    ],
+    "web_accessible_resources": [{
+        "resources": ["/assets/*"],
+        "matches": ["https://www.linkedin.com/*"]
+    }]
+}
