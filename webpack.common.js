@@ -29,9 +29,6 @@ const config = {
             {
                 test: /\.svg$/i,
                 type: "asset/resource",
-                // generator: {
-                //     outputPath: "assets/",
-                // },
             },
             {
                 test: /\.tsx?$/,
@@ -44,6 +41,7 @@ const config = {
         extensions: [".ts", ".tsx"],
         alias: {
             lib: path.resolve(dirName, "src/lib"),
+            components: path.resolve(dirName, "src/app/components"),
         },
     },
     plugins: [
