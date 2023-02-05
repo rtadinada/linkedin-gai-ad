@@ -1,4 +1,4 @@
-import Test from "components/Test/Test";
+import Modal from "components/Modal/Modal";
 import React from "react";
 
 type Props = {
@@ -18,13 +18,9 @@ export default class App extends React.Component<Props, State> {
     render(): React.ReactNode {
         return (
             this.state.open && (
-                <div
-                    onClick={() => {
-                        this.setState(INITIAL_STATE);
-                    }}
-                >
-                    <Test />
-                </div>
+                <Modal onClose={() => this.setState(INITIAL_STATE)}>
+                    <div>hello</div>
+                </Modal>
             )
         );
     }
