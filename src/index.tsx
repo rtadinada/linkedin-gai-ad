@@ -12,42 +12,57 @@ declare global {
     }
 }
 
-const appContainer = document.createElement("div");
-appContainer.id = "gai-ad-root";
-document.body.prepend(appContainer);
+const reportingBarClass = "reporting-actions-bar__actions-container";
 
-const appRoot = createRoot(appContainer);
-appRoot.render(
-    <React.StrictMode>
-        <App
-            ref={(app) => {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                window.App = app!;
-            }}
-        />
-    </React.StrictMode>
-);
+window.addEventListener("load", run, false);
 
-const buttonContainer = document.createElement("div");
-buttonContainer.id = "gai-open-button-cnt";
-buttonContainer.style.margin = "4px";
+function run() {
+    const jsInitChecktimer = setInterval(checkForBarLoaded, 51);
 
-const reportingBar = document
-    .getElementsByClassName("reporting-actions-bar__actions-container")
-    .item(0);
-const buttonCluster = reportingBar?.children.item(0);
-buttonCluster?.prepend(buttonContainer);
+    function checkForBarLoaded() {
+        if (document.getElementsByClassName(reportingBarClass).length > 0) {
+            clearInterval(jsInitChecktimer);
+            load();
+        }
+    }
+}
 
-const buttonRoot = createRoot(buttonContainer);
-buttonRoot.render(
-    <React.StrictMode>
-        <Button
-            onClick={() => {
-                window.App.setState({ open: true });
-            }}
-            icon={getResourceUrl(BeakerImage)}
-        >
-            Generate Ads
-        </Button>
-    </React.StrictMode>
-);
+function load() {
+    const appContainer = document.createElement("div");
+    appContainer.id = "gai-ad-root";
+    document.body.prepend(appContainer);
+
+    const appRoot = createRoot(appContainer);
+    appRoot.render(
+        <React.StrictMode>
+            <App
+                ref={(app) => {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    window.App = app!;
+                }}
+            />
+        </React.StrictMode>
+    );
+
+    const buttonContainer = document.createElement("div");
+    buttonContainer.id = "gai-open-button-cnt";
+    buttonContainer.style.margin = "4px";
+
+    const reportingBar = document.getElementsByClassName(reportingBarClass).item(0);
+    const buttonCluster = reportingBar?.children.item(0);
+    buttonCluster?.append(buttonContainer);
+
+    const buttonRoot = createRoot(buttonContainer);
+    buttonRoot.render(
+        <React.StrictMode>
+            <Button
+                onClick={() => {
+                    window.App.setState({ open: true });
+                }}
+                icon={getResourceUrl(BeakerImage)}
+            >
+                Generate Ads
+            </Button>
+        </React.StrictMode>
+    );
+}
