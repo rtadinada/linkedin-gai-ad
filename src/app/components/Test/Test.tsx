@@ -1,6 +1,6 @@
+import { getResourceUrl } from "lib/chrome-utils";
 import React from "react";
 
-import { getResourceUrl } from "lib/chrome-utils";
 import style from "./Test.css";
 import Image from "./Test.svg";
 

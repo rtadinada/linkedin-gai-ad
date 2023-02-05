@@ -9,6 +9,8 @@ const dirName = path.dirname(fileName);
 const buildDir = path.resolve(dirName, "dist");
 
 const config = {
+    mode: "development",
+    devtool: "inline-source-map",
     module: {
         rules: [
             {
@@ -41,8 +43,8 @@ const config = {
     resolve: {
         extensions: [".ts", ".tsx"],
         alias: {
-            lib: path.resolve(dirName, "src/lib")
-        }
+            lib: path.resolve(dirName, "src/lib"),
+        },
     },
     plugins: [
         new ForkTsCheckerWebpackPlugin({
@@ -62,7 +64,7 @@ const config = {
         filename: "content.js",
         path: buildDir,
         assetModuleFilename: "assets/[hash][ext][query]",
-        publicPath: '',
+        publicPath: "",
         clean: true,
     },
 };

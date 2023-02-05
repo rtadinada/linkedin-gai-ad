@@ -11,8 +11,10 @@
             ]
         }
     ],
-    "web_accessible_resources": [{
-        "resources": ["/assets/*"],
-        "matches": ["https://www.linkedin.com/*"]
-    }]
+    "web_accessible_resources": [
+        {
+            "resources": ["/assets/*"],
+            "matches": ["https://www.linkedin.com/*"]
+        }
+    ]
 }
