@@ -22,6 +22,13 @@ const config = {
                 ],
             },
             {
+                test: /\.svg$/i,
+                type: "asset/resource",
+                // generator: {
+                //     outputPath: "assets/",
+                // },
+            },
+            {
                 test: /\.tsx?$/,
                 use: "ts-loader",
                 exclude: /node_modules/,
@@ -39,6 +46,7 @@ const config = {
     output: {
         filename: "content.js",
         path: path.resolve(dirName, "dist"),
+        assetModuleFilename: "assets/[hash][ext][query]",
         // clean: true,
     },
 };
