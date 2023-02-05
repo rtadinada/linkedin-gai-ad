@@ -14,7 +14,7 @@ const config = {
     module: {
         rules: [
             {
-                test: /\.css$/i,
+                test: /\.(scss|css)$/i,
                 use: [
                     "style-loader",
                     {
@@ -24,6 +24,7 @@ const config = {
                             modules: true,
                         },
                     },
+                    'sass-loader'
                 ],
             },
             {
@@ -42,6 +43,7 @@ const config = {
         alias: {
             lib: path.resolve(dirName, "src/lib"),
             components: path.resolve(dirName, "src/app/components"),
+            common: path.resolve(dirName, "src/app/common"),
         },
     },
     plugins: [
