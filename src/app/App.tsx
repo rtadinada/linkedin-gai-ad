@@ -1,7 +1,7 @@
 import CreatePage from "components/CreatePage/CreatePage";
 import GeneratePage from "components/GeneratePage/GeneratePage";
 import Modal, { ModalSize } from "components/Modal/Modal";
-import { getPageRawHTML } from "lib/fetch";
+import { getLandingPageContent } from "lib/background-fetch";
 import React from "react";
 
 type Props = {
@@ -37,7 +37,7 @@ export default class App extends React.Component<Props, State> {
     render(): React.ReactNode {
         const onLandingPageSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
-            this.setState({ pageHTML: await getPageRawHTML(this.state.urlInput) });
+            this.setState({ pageHTML: await getLandingPageContent(this.state.urlInput) });
         };
 
         const page = this.getPage();

@@ -5,14 +5,18 @@
     "description": "A Chrome extension which uses generative AI to create LinkedIn ads",
     "content_scripts": [
         {
-            "js": ["content.js"],
+            "js": ["content.bundle.js"],
             "matches": ["https://www.linkedin.com/campaignmanager/accounts/*/campaigns*"]
         }
     ],
+    "background": {
+        "service_worker": "background.bundle.js"
+    },
     "web_accessible_resources": [
         {
             "resources": ["/assets/*"],
             "matches": ["https://www.linkedin.com/*"]
         }
-    ]
+    ],
+    "host_permissions": ["https://*/*"]
 }

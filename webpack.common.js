@@ -9,6 +9,10 @@ const dirName = path.dirname(fileName);
 const buildDir = path.resolve(dirName, "dist");
 
 const config = {
+    entry: {
+        content: "./src/content.tsx",
+        background: "./src/background.ts",
+    },
     mode: "development",
     devtool: "inline-source-map",
     module: {
@@ -61,7 +65,7 @@ const config = {
         }),
     ],
     output: {
-        filename: "content.js",
+        filename: "[name].bundle.js",
         path: buildDir,
         assetModuleFilename: "assets/[hash][ext][query]",
         publicPath: "",
