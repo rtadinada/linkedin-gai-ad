@@ -1,6 +1,7 @@
-import CreatePage from "components/CreatePage/CreatePage";
+import CreatePage, { AdSelection } from "components/CreatePage/CreatePage";
 import GeneratePage from "components/GeneratePage/GeneratePage";
 import Modal, { ModalSize } from "components/Modal/Modal";
+import { generateAllOptions, GeneratedOptions } from "lib/openai-queries";
 import { getLandingPageText } from "lib/page-content";
 import React from "react";
 
@@ -10,16 +11,28 @@ type Props = {
 type State = {
     open: boolean;
     urlInput: string;
-    pageContent: string;
     isFetching: boolean;
+    generatedOptions: GeneratedOptions | null;
+    ads: AdSelection[];
+    selectedAd: number;
 };
 
-const INITIAL_STATE: State = {
-    open: false,
-    urlInput: "",
-    pageContent: "",
-    isFetching: false,
-};
+function makeInitialState(): State {
+    return {
+        open: false,
+        urlInput: "",
+        isFetching: false,
+        generatedOptions: null,
+        ads: [
+            {
+                headlineIndex: { index: 0, overwrite: null },
+                introTextIndex: { index: 0, overwrite: null },
+                imageIndex: 0,
+            },
+        ],
+        selectedAd: 0,
+    };
+}
 
 enum DisplayPage {
     GENERATE,
@@ -27,10 +40,10 @@ enum DisplayPage {
 }
 
 export default class App extends React.Component<Props, State> {
-    state = INITIAL_STATE;
+    state = makeInitialState();
 
     getPage = (): DisplayPage => {
-        if (this.state.pageContent !== "") {
+        if (this.state.generatedOptions !== null) {
             return DisplayPage.CREATE;
         }
         return DisplayPage.GENERATE;
@@ -42,7 +55,16 @@ export default class App extends React.Component<Props, State> {
             this.setState({ isFetching: true });
             setTimeout(async () => {
                 const content = await getLandingPageText(this.state.urlInput);
-                this.setState({ isFetching: false, pageContent: content || "Error parsing" });
+                if (content === null) {
+                    console.error("Unable to retrieve page content");
+                    return;
+                }
+                const generatedOptions = await generateAllOptions(content);
+                if (generatedOptions === null) {
+                    console.error("Unable to retrieve options.");
+                    return;
+                }
+                this.setState({ isFetching: false, generatedOptions });
             }, 300);
         };
 
@@ -51,7 +73,7 @@ export default class App extends React.Component<Props, State> {
 
         return (
             this.state.open && (
-                <Modal size={size} onClose={() => this.setState(INITIAL_STATE)}>
+                <Modal size={size} onClose={() => this.setState(makeInitialState())}>
                     {page === DisplayPage.GENERATE && (
                         <GeneratePage
                             loading={this.state.isFetching}
@@ -60,7 +82,14 @@ export default class App extends React.Component<Props, State> {
                             onSubmit={onLandingPageSubmit}
                         />
                     )}
-                    {page === DisplayPage.CREATE && <CreatePage html={this.state.pageContent} />}
+                    {page === DisplayPage.CREATE && (
+                        <CreatePage
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            options={this.state.generatedOptions!}
+                            ads={this.state.ads}
+                            selectedAd={this.state.selectedAd}
+                        />
+                    )}
                 </Modal>
             )
         );
