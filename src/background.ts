@@ -1,22 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
     BackgroundRequest,
-    GetLandingPageContentQuery,
-    LANDING_PAGE_REQUEST,
-    LandingPageQueryResult,
+    GetRawHTMLQuery,
+    GetRawHTMLResult,
+    RAW_HTML_REQUEST,
 } from "lib/background-fetch";
 
-async function getLandingPageContentHandler(
-    request: GetLandingPageContentQuery,
+async function getRawHTMLHandler(
+    request: GetRawHTMLQuery,
     sender: chrome.runtime.MessageSender,
-    sendResponse: (a: LandingPageQueryResult) => void
+    sendResponse: (a: GetRawHTMLResult) => void
 ) {
     const { url } = request;
     const fetchResult = await fetch(url);
-
-    sendResponse({
-        content: await fetchResult.text(),
-    });
+    const content = await fetchResult.text();
+    sendResponse({ html: content });
 }
 
 chrome.runtime.onMessage.addListener(
@@ -25,12 +23,9 @@ chrome.runtime.onMessage.addListener(
         sender: chrome.runtime.MessageSender,
         sendResponse: (a: any) => void
     ) => {
-        if (req.query === LANDING_PAGE_REQUEST) {
-            getLandingPageContentHandler(
-                req.request as GetLandingPageContentQuery,
-                sender,
-                sendResponse
-            );
+        if (req.query === RAW_HTML_REQUEST) {
+            console.log(req);
+            getRawHTMLHandler(req.request as GetRawHTMLQuery, sender, sendResponse);
             return true;
         }
         return false;

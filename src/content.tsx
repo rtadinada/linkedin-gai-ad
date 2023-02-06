@@ -14,10 +14,10 @@ declare global {
 
 const reportingBarClass = "reporting-actions-bar__actions-container";
 
-window.addEventListener("load", run, false);
+// window.addEventListener("load", run, false);
 
 function run() {
-    const jsInitChecktimer = setInterval(checkForBarLoaded, 51);
+    const jsInitChecktimer = setInterval(checkForBarLoaded, 11);
 
     function checkForBarLoaded() {
         if (document.getElementsByClassName(reportingBarClass).length > 0) {
@@ -66,3 +66,5 @@ function load() {
         </React.StrictMode>
     );
 }
+
+run();

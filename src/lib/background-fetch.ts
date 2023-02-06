@@ -2,14 +2,14 @@ export type BackgroundRequest<T> = {
     query: string;
     request: T;
 };
-export type GetLandingPageContentQuery = {
+export type GetRawHTMLQuery = {
     url: string;
 };
-export type LandingPageQueryResult = {
-    content: string;
+export type GetRawHTMLResult = {
+    html: string | null;
 };
 
-export const LANDING_PAGE_REQUEST = "LANDING_PAGE_REQUEST";
+export const RAW_HTML_REQUEST = "RAW_HTML_REQUEST";
 
 async function sendMessage<T, R>(message: BackgroundRequest<T>): Promise<R> {
     const result: R = await chrome.runtime.sendMessage(message);
@@ -20,13 +20,12 @@ async function sendQuery<T, R>(query: string, request: T): Promise<R> {
     return sendMessage({ query, request });
 }
 
-async function sendGetLandingPageContentQuery(
-    request: GetLandingPageContentQuery
-): Promise<LandingPageQueryResult> {
-    return sendQuery(LANDING_PAGE_REQUEST, request);
+async function sendGetRawHTMLQuery(request: GetRawHTMLQuery): Promise<GetRawHTMLResult> {
+    return sendQuery(RAW_HTML_REQUEST, request);
 }
 
-export async function getLandingPageContent(url: string): Promise<string> {
-    const queryResult = await sendGetLandingPageContentQuery({ url });
-    return queryResult.content;
+export async function getRawHTML(url: string): Promise<string | null> {
+    const queryResult = await sendGetRawHTMLQuery({ url });
+    const { html } = queryResult;
+    return html;
 }
