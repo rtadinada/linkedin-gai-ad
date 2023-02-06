@@ -1,6 +1,6 @@
-import { getResourceUrl } from "lib/chrome-utils";
 import Submit from "components/Button/Submit";
 import Page from "components/Page/Page";
+import { getResourceUrl } from "lib/chrome-utils";
 import React, { ChangeEventHandler, FormEventHandler } from "react";
 
 import style from "./GeneratePage.scss";

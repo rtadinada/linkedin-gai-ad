@@ -9,11 +9,10 @@ export enum ModalSize {
     SMALL,
 }
 
-export type Props = {
+export type Props = React.PropsWithChildren<{
     size?: ModalSize;
-    children: React.ReactElement;
     onClose: () => void;
-};
+}>;
 
 export default function Modal(props: Props): JSX.Element {
     let classNames = [style.modal];
