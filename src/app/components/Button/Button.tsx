@@ -1,9 +1,9 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 
 import style from "./Button.scss";
 
 export type Props = {
-    onClick: React.MouseEventHandler;
+    onClick: MouseEventHandler<HTMLButtonElement>;
     icon?: string;
     children: string;
 };

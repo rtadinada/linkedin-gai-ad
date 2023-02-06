@@ -1,0 +1,47 @@
+@import "common/css/common";
+
+.form {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo {
+    height: 130px;
+    margin-bottom: 30px;
+}
+
+#urlInput {
+    border: none;
+    box-shadow: none;
+    width: 50%;
+    line-height: 1.75;
+    font-weight: 400;
+    font-size: 14px;
+    height: 34px;
+    background-color: #eef3f8;
+    border-radius: 0.6rem;
+    color: $font-primary-color;
+
+    margin-bottom: 30px;
+
+    transition-property: background-color, box-shadow, border-color, width;
+    transition-duration: 100ms;
+
+    &:hover,
+    &:focus {
+        background-color: #f0f3f8;
+        box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+        border-color: rgba(223, 225, 229, 0);
+    }
+
+    &:focus {
+        width: 70%;
+    }
+
+    // Undo page styling
+    outline: none;
+}

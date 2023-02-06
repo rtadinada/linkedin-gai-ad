@@ -16,6 +16,15 @@
     width: 1000px;
     height: 800px;
     background-color: white;
+    border-radius: 10px;
+
+    transition-property: width, height;
+    transition-duration: 200ms;
+}
+
+.modalSmall {
+    width: 600px;
+    height: 400px;
 }
 
 .xContainer {
