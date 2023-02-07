@@ -10,6 +10,7 @@
         "baseUrl": "src",
         "paths": {
             "lib/*": ["lib/*"],
+            "config/*": ["config/*"],
             "components/*": ["app/components/*"]
         }
     }

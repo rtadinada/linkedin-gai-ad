@@ -11,6 +11,7 @@ import {
     GetRawHTMLResult,
     RAW_HTML_REQUEST,
 } from "lib/background-fetch";
+import { getCompletions, getImages } from "lib/openapi-fetch";
 
 async function getRawHTMLHandler(
     request: GetRawHTMLQuery,
@@ -28,11 +29,8 @@ async function chatGPTQueryHandler(
     sender: chrome.runtime.MessageSender,
     sendResponse: (a: ChatGPTResult) => void
 ) {
-    const { input, numResponses } = request;
-    const responses = [];
-    for (let i = 0; i < numResponses; i++) {
-        responses.push(`${input.trimStart().substring(0, request.maxTokens * 4)} ${i}`);
-    }
+    const { input, maxTokens, numResponses } = request;
+    const responses = await getCompletions(input, maxTokens, numResponses);
     sendResponse({ responses });
 }
 
@@ -41,14 +39,17 @@ async function dallEQueryHandler(
     sender: chrome.runtime.MessageSender,
     sendResponse: (a: DallEResult) => void
 ) {
-    const urls = [
-        "https://www.springboard.com/blog/wp-content/uploads/2022/02/is-ai-hard-to-learn-scaled.jpg",
-        "https://api.time.com/wp-content/uploads/2022/11/GettyImages-1358149692.jpg",
-        "https://www.state.gov/wp-content/uploads/2021/06/AI-Motherboard-scaled.jpg",
-        "https://www.simplilearn.com/ice9/free_resources_article_thumb/Types_of_Artificial_Intelligence.jpg",
-        "https://www.simplilearn.com/ice9/free_resources_article_thumb/Types_of_Artificial_Intelligence.jpg",
-    ];
+    const { input, numResponses } = request;
+    const urls = await getImages(input, numResponses);
     sendResponse({ urls });
+    // const urls = [
+    //     "https://www.springboard.com/blog/wp-content/uploads/2022/02/is-ai-hard-to-learn-scaled.jpg",
+    //     "https://api.time.com/wp-content/uploads/2022/11/GettyImages-1358149692.jpg",
+    //     "https://www.state.gov/wp-content/uploads/2021/06/AI-Motherboard-scaled.jpg",
+    //     "https://www.simplilearn.com/ice9/free_resources_article_thumb/Types_of_Artificial_Intelligence.jpg",
+    //     "https://www.simplilearn.com/ice9/free_resources_article_thumb/Types_of_Artificial_Intelligence.jpg",
+    // ];
+    // sendResponse({ urls });
 }
 
 chrome.runtime.onMessage.addListener(

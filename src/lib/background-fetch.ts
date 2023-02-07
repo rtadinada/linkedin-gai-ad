@@ -61,7 +61,7 @@ export async function getRawHTML(url: string): Promise<string | null> {
 export async function makeChatGPTQuery(
     input: string,
     maxTokens: number,
-    numResponses = 1
+    numResponses: number
 ): Promise<string[] | null> {
     const queryResult = await sendChatGPTQuery({ input, maxTokens, numResponses });
     const { responses } = queryResult;

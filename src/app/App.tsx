@@ -1,6 +1,7 @@
 import CreatePage, { AdSelection, MAX_ADS, OverwriteFunc } from "components/CreatePage/CreatePage";
 import GeneratePage from "components/GeneratePage/GeneratePage";
 import Modal, { ModalSize } from "components/Modal/Modal";
+import { MAX_HEADLINE_LENGTH, MAX_INTRO_TEXT_LENGTH } from "lib/limits";
 import { generateAllOptions, GeneratedOptions } from "lib/openai-queries";
 import { getLandingPageText } from "lib/page-content";
 import { removeTabNewline } from "lib/util";
@@ -134,9 +135,6 @@ enum DisplayPage {
     GENERATE,
     CREATE,
 }
-
-const MAX_HEADLINE_LENGTH = 50;
-const MAX_INTRO_TEXT_LENGTH = 400;
 
 export default class App extends React.Component<Props, State> {
     state = makeInitialState();

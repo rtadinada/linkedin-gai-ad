@@ -242,7 +242,7 @@ export default function CreatePage(props: Props): JSX.Element {
                         disabled={props.ads.length === MAX_ADS}
                         onClick={props.onCreateNewAd}
                     >
-                        Make Another
+                        Select Another
                     </SecondaryButton>
                 </div>
                 <div className={style.rightSideButton}>

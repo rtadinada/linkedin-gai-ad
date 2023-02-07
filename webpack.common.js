@@ -46,6 +46,7 @@ const config = {
         extensions: [".ts", ".tsx", ".js"],
         alias: {
             lib: path.resolve(dirName, "src/lib"),
+            config: path.resolve(dirName, "src/config"),
             components: path.resolve(dirName, "src/app/components"),
             common: path.resolve(dirName, "src/app/common"),
         },
