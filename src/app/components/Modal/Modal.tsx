@@ -24,10 +24,10 @@ export default function Modal(props: Props): JSX.Element {
     return (
         <div className={style.backdrop}>
             <div className={classNames.join(" ")}>
+                {props.children}
                 <button onClick={props.onClose} className={style.xContainer}>
                     <img src={getResourceUrl(X)} />
                 </button>
-                {props.children}
             </div>
         </div>
     );

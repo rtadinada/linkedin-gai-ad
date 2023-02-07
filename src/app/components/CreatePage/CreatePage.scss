@@ -1,0 +1,20 @@
+.headlineSectionContainer {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
+    height: 300px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.headlineInputContainer {
+    display: flex;
+    width: 300px;
+    height: 100%;
+    flex-direction: column;
+    justify-content: flex-end;
+}

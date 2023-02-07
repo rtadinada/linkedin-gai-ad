@@ -1,4 +1,4 @@
-import CreatePage, { AdSelection } from "components/CreatePage/CreatePage";
+import CreatePage, { AdSelection, OverwriteFunc } from "components/CreatePage/CreatePage";
 import GeneratePage from "components/GeneratePage/GeneratePage";
 import Modal, { ModalSize } from "components/Modal/Modal";
 import { generateAllOptions, GeneratedOptions } from "lib/openai-queries";
@@ -17,19 +17,22 @@ type State = {
     selectedAd: number;
 };
 
+function makeNewAdSelection(): AdSelection {
+    return {
+        headlineIndex: 0,
+        introTextIndex: 0,
+        imageIndex: 0,
+        headlineOverwrites: new Map(),
+        introTextOverwrites: new Map(),
+    };
+}
 function makeInitialState(): State {
     return {
         open: false,
         urlInput: "",
         isFetching: false,
         generatedOptions: null,
-        ads: [
-            {
-                headlineIndex: { index: 0, overwrite: null },
-                introTextIndex: { index: 0, overwrite: null },
-                imageIndex: 0,
-            },
-        ],
+        ads: [makeNewAdSelection()],
         selectedAd: 0,
     };
 }
@@ -71,6 +74,28 @@ export default class App extends React.Component<Props, State> {
         const page = this.getPage();
         const size = page === DisplayPage.GENERATE ? ModalSize.SMALL : ModalSize.LARGE;
 
+        const onHeadlineOverwrite: OverwriteFunc = (adIndex, optionIndex, value) => {
+            this.setState((prevState) => {
+                const newOverwites = new Map(prevState.ads[adIndex].headlineOverwrites);
+                if (value !== prevState.generatedOptions?.headlines[optionIndex]) {
+                    newOverwites.set(optionIndex, value);
+                } else {
+                    newOverwites.delete(optionIndex);
+                }
+
+                const newAd = {
+                    ...prevState.ads[adIndex],
+                    headlineOverwrites: newOverwites,
+                };
+
+                const newAds = prevState.ads
+                    .slice(0, adIndex)
+                    .concat([newAd, ...prevState.ads.slice(adIndex + 1)]);
+
+                return { ads: newAds };
+            });
+        };
+
         return (
             this.state.open && (
                 <Modal size={size} onClose={() => this.setState(makeInitialState())}>
@@ -88,6 +113,7 @@ export default class App extends React.Component<Props, State> {
                             options={this.state.generatedOptions!}
                             ads={this.state.ads}
                             selectedAd={this.state.selectedAd}
+                            onHeadlineOverwrite={onHeadlineOverwrite}
                         />
                     )}
                 </Modal>
