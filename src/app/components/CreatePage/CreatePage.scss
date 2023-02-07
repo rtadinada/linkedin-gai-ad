@@ -3,7 +3,7 @@
     top: 50px;
     left: 0;
     right: 0;
-    height: 300px;
+    height: 142px;
 
     display: flex;
     flex-direction: row;
@@ -13,8 +13,18 @@
 
 .headlineInputContainer {
     display: flex;
-    width: 300px;
+    width: 500px;
     height: 100%;
     flex-direction: column;
     justify-content: flex-end;
+}
+
+.arrowContainer {
+    width: 25px;
+    height: 25px;
+}
+
+.headlineArrow {
+    margin: 30px;
+    margin-bottom: 55px;
 }

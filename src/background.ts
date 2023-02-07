@@ -31,7 +31,7 @@ async function chatGPTQueryHandler(
     const { input, numResponses } = request;
     const responses = [];
     for (let i = 0; i < numResponses; i++) {
-        responses.push(`${input.trimStart().substring(0, 15)} ${i}`);
+        responses.push(`${input.trimStart().substring(0, 97)} ${i}`);
     }
     sendResponse({ responses });
 }

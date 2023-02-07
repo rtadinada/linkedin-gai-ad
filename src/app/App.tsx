@@ -37,6 +37,50 @@ function makeInitialState(): State {
     };
 }
 
+function updateAd(prevState: State, adIndex: number, newAd: AdSelection) {
+    const newAds = prevState.ads
+        .slice(0, adIndex)
+        .concat([newAd, ...prevState.ads.slice(adIndex + 1)]);
+
+    return { ads: newAds };
+}
+
+function updateHeadlineOverwrite(prevState: State, headlineIndex: number, overwrite: string) {
+    const adIndex = prevState.selectedAd;
+
+    const newOverwites = new Map(prevState.ads[adIndex].headlineOverwrites);
+    if (overwrite !== prevState.generatedOptions?.headlines[headlineIndex]) {
+        newOverwites.set(headlineIndex, overwrite);
+    } else {
+        newOverwites.delete(headlineIndex);
+    }
+
+    const newAd: AdSelection = {
+        ...prevState.ads[adIndex],
+        headlineOverwrites: newOverwites,
+    };
+
+    return updateAd(prevState, adIndex, newAd);
+}
+
+function selectHeadline(prevState: State, newHeadlineIndex: number) {
+    const adIndex = prevState.selectedAd;
+    const prevAd = prevState.ads[adIndex];
+    const prevIndex = prevAd.headlineIndex;
+
+    let newAd: AdSelection = {
+        ...prevAd,
+        headlineIndex: newHeadlineIndex,
+    };
+    if (newAd.headlineOverwrites.get(prevIndex) === "") {
+        const newOverwites = new Map(prevState.ads[adIndex].headlineOverwrites);
+        newOverwites.delete(prevIndex);
+        newAd = { ...newAd, headlineOverwrites: newOverwites };
+    }
+
+    return updateAd(prevState, adIndex, newAd);
+}
+
 enum DisplayPage {
     GENERATE,
     CREATE,
@@ -74,26 +118,14 @@ export default class App extends React.Component<Props, State> {
         const page = this.getPage();
         const size = page === DisplayPage.GENERATE ? ModalSize.SMALL : ModalSize.LARGE;
 
-        const onHeadlineOverwrite: OverwriteFunc = (adIndex, optionIndex, value) => {
-            this.setState((prevState) => {
-                const newOverwites = new Map(prevState.ads[adIndex].headlineOverwrites);
-                if (value !== prevState.generatedOptions?.headlines[optionIndex]) {
-                    newOverwites.set(optionIndex, value);
-                } else {
-                    newOverwites.delete(optionIndex);
-                }
-
-                const newAd = {
-                    ...prevState.ads[adIndex],
-                    headlineOverwrites: newOverwites,
-                };
-
-                const newAds = prevState.ads
-                    .slice(0, adIndex)
-                    .concat([newAd, ...prevState.ads.slice(adIndex + 1)]);
-
-                return { ads: newAds };
-            });
+        const onHeadlineOverwrite: OverwriteFunc = (optionIndex, value) => {
+            if (value.length > 100) {
+                return;
+            }
+            this.setState((prevState) => updateHeadlineOverwrite(prevState, optionIndex, value));
+        };
+        const onChangeSelectedHeadline = (newIndex: number) => {
+            this.setState((prevState) => selectHeadline(prevState, newIndex));
         };
 
         return (
@@ -114,6 +146,7 @@ export default class App extends React.Component<Props, State> {
                             ads={this.state.ads}
                             selectedAd={this.state.selectedAd}
                             onHeadlineOverwrite={onHeadlineOverwrite}
+                            onChangeSelectedHeadline={onChangeSelectedHeadline}
                         />
                     )}
                 </Modal>
