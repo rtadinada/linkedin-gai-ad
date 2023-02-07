@@ -81,6 +81,18 @@ function selectHeadline(prevState: State, newHeadlineIndex: number) {
     return updateAd(prevState, adIndex, newAd);
 }
 
+function selectImage(prevState: State, newImageIndex: number) {
+    const adIndex = prevState.selectedAd;
+    const prevAd = prevState.ads[adIndex];
+
+    const newAd: AdSelection = {
+        ...prevAd,
+        imageIndex: newImageIndex,
+    };
+
+    return updateAd(prevState, adIndex, newAd);
+}
+
 enum DisplayPage {
     GENERATE,
     CREATE,
@@ -130,6 +142,10 @@ export default class App extends React.Component<Props, State> {
             this.setState((prevState) => selectHeadline(prevState, newIndex));
         };
 
+        const onChangeSelectedImage = (newIndex: number) => {
+            this.setState((prevState) => selectImage(prevState, newIndex));
+        };
+
         return (
             this.state.open && (
                 <Modal size={size} onClose={() => this.setState(makeInitialState())}>
@@ -149,6 +165,7 @@ export default class App extends React.Component<Props, State> {
                             selectedAd={this.state.selectedAd}
                             onHeadlineOverwrite={onHeadlineOverwrite}
                             onChangeSelectedHeadline={onChangeSelectedHeadline}
+                            onChangeSelectedImage={onChangeSelectedImage}
                         />
                     )}
                 </Modal>

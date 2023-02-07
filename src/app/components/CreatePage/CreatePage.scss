@@ -1,9 +1,12 @@
+.arrowContainer {
+    width: 25px;
+    height: 25px;
+}
+
 .headlineSectionContainer {
-    position: absolute;
-    top: 50px;
-    left: 0;
-    right: 0;
+    margin-top: 50px;
     height: 142px;
+    width: 100%;
 
     display: flex;
     flex-direction: row;
@@ -12,19 +15,37 @@
 }
 
 .headlineInputContainer {
-    display: flex;
     width: 500px;
     height: 100%;
-    flex-direction: column;
-    justify-content: flex-end;
-}
-
-.arrowContainer {
-    width: 25px;
-    height: 25px;
 }
 
 .headlineArrow {
     margin: 30px;
     margin-bottom: 55px;
+}
+
+.imageSectionContainer {
+    margin-top: 50px;
+    height: 262px;
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.imageInputContainer {
+    display: flex;
+    width: 500px;
+    height: 100%;
+}
+
+.imageArrow {
+    margin: 30px;
+}
+
+.image {
+    height: 262px;
+    width: 500px;
 }

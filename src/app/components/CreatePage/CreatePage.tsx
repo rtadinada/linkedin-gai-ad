@@ -19,6 +19,7 @@ export type Props = {
     selectedAd: number;
     onHeadlineOverwrite: OverwriteFunc;
     onChangeSelectedHeadline: (index: number) => void;
+    onChangeSelectedImage: (index: number) => void;
 };
 
 export type AdSelection = {
@@ -115,6 +116,15 @@ export default function CreatePage(props: Props): JSX.Element {
         };
     };
 
+    type ImageInputCreatorOptions = {
+        options: string[];
+    };
+    const imageElementCreatorCreator = (
+        opts: ImageInputCreatorOptions
+    ): ((i: number) => JSX.Element) => {
+        return (i) => <img key={i} className={style.image} src={opts.options[i]} />;
+    };
+
     type TextInputCarouselOptions = {
         options: string[];
         overwritesGetter: (ad: AdSelection) => Map<number, string>;
@@ -131,8 +141,22 @@ export default function CreatePage(props: Props): JSX.Element {
         return createCarouselSection({ ...opts, carouselElementCreator });
     };
 
+    type ImageCarouselOptions = {
+        options: string[];
+        indexGetter: (ad: AdSelection) => number;
+        onChangeIndex: (index: number) => void;
+        sectionContainerClass: string;
+        arrowClass: string;
+        carouselContainerClass: string;
+        carouselAlign: string;
+    };
+    const createImageCarousel = (opts: ImageCarouselOptions): JSX.Element => {
+        const carouselElementCreator = imageElementCreatorCreator(opts);
+        return createCarouselSection({ ...opts, carouselElementCreator });
+    };
+
     return (
-        <Page>
+        <Page justifyContent="flex-start">
             {createTextInputCarousel({
                 options: props.options.headlines,
                 overwritesGetter: (ad) => ad.headlineOverwrites,
@@ -143,6 +167,15 @@ export default function CreatePage(props: Props): JSX.Element {
                 arrowClass: style.headlineArrow,
                 carouselContainerClass: style.headlineInputContainer,
                 carouselAlign: "flex-end",
+            })}
+            {createImageCarousel({
+                options: props.options.imageUrls,
+                indexGetter: (ad) => ad.imageIndex,
+                onChangeIndex: props.onChangeSelectedImage,
+                sectionContainerClass: style.imageSectionContainer,
+                arrowClass: style.imageArrow,
+                carouselContainerClass: style.imageInputContainer,
+                carouselAlign: "center",
             })}
         </Page>
     );
