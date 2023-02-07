@@ -86,6 +86,8 @@ enum DisplayPage {
     CREATE,
 }
 
+const MAX_HEADLINE_LENGTH = 100;
+
 export default class App extends React.Component<Props, State> {
     state = makeInitialState();
 
@@ -119,7 +121,7 @@ export default class App extends React.Component<Props, State> {
         const size = page === DisplayPage.GENERATE ? ModalSize.SMALL : ModalSize.LARGE;
 
         const onHeadlineOverwrite: OverwriteFunc = (optionIndex, value) => {
-            if (value.length > 100) {
+            if (value.length > MAX_HEADLINE_LENGTH) {
                 return;
             }
             this.setState((prevState) => updateHeadlineOverwrite(prevState, optionIndex, value));
