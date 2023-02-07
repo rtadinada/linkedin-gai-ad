@@ -1,4 +1,5 @@
 import { makeChatGPTQuery, makeDallEQuery } from "./background-fetch";
+import { removeTabNewline } from "./util";
 
 const NUM_OPTIONS = 5;
 
@@ -18,10 +19,6 @@ function makePrompt(content: string, prompt: string) {
     return `${truncatedContent}\n${prompt}\n`;
 }
 
-function sanitizeOutput(s: string): string {
-    return s.replace(/[\n\t]/g, "");
-}
-
 export type GeneratedOptions = {
     headlines: string[];
     introTexts: string[];
@@ -32,14 +29,14 @@ export async function generateHeadlines(content: string): Promise<string[] | nul
     const prompt = makePrompt(content, HEADLINE_PROMPT);
 
     const responses = await makeChatGPTQuery(prompt, 8, NUM_OPTIONS);
-    return responses?.map(sanitizeOutput) || null;
+    return responses?.map(removeTabNewline) || null;
 }
 
 export async function generateIntroText(content: string): Promise<string[] | null> {
     const prompt = makePrompt(content, INTRO_TEXT_PROMPT);
 
-    const responses = await makeChatGPTQuery(prompt, 500, NUM_OPTIONS);
-    return responses?.map(sanitizeOutput) || null;
+    const responses = await makeChatGPTQuery(prompt, 100, NUM_OPTIONS);
+    return responses?.map(removeTabNewline) || null;
 }
 
 async function generateImagePrompt(content: string): Promise<string | null> {

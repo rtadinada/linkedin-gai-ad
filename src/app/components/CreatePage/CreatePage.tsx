@@ -1,5 +1,7 @@
 import LeftArrow from "common/images/arrow-left.svg";
 import RightArrow from "common/images/arrow-right.svg";
+import Button from "components/Button/Button";
+import SecondaryButton, { SecondaryButtonColor } from "components/Button/SecondaryButton";
 import Carousel from "components/Carousel/Carousel";
 import ClickableIcon from "components/ClickableIcon/ClickableIcon";
 import EditableText, { FontSize } from "components/EditableText/EditableText";
@@ -11,6 +13,8 @@ import React from "react";
 
 import style from "./CreatePage.scss";
 
+export const MAX_ADS = 5;
+
 export type OverwriteFunc = (optionIndex: number, value: string) => void;
 
 export type Props = {
@@ -19,7 +23,12 @@ export type Props = {
     selectedAd: number;
     onHeadlineOverwrite: OverwriteFunc;
     onChangeSelectedHeadline: (index: number) => void;
+    onIntroTextOverwrite: OverwriteFunc;
+    onChangeSelectedIntroText: (index: number) => void;
     onChangeSelectedImage: (index: number) => void;
+    onSelectAd: (index: number) => void;
+    onCreateNewAd: () => void;
+    onDeleteAd: () => void;
 };
 
 export type AdSelection = {
@@ -31,6 +40,8 @@ export type AdSelection = {
 };
 
 export default function CreatePage(props: Props): JSX.Element {
+    console.log(props);
+
     const selectedAd = props.ads[props.selectedAd];
 
     type CarouselOptions = {
@@ -160,6 +171,9 @@ export default function CreatePage(props: Props): JSX.Element {
 
     return (
         <Page justifyContent="flex-start">
+            <div className={style.pageTitleContainer}>
+                <h1>Select Ads</h1>
+            </div>
             {createTextInputCarousel({
                 options: props.options.headlines,
                 fontSize: FontSize.LARGE,
@@ -181,65 +195,60 @@ export default function CreatePage(props: Props): JSX.Element {
                 carouselContainerClass: style.imageInputContainer,
                 carouselAlign: "center",
             })}
+            {createTextInputCarousel({
+                options: props.options.introTexts,
+                fontSize: FontSize.SMALL,
+                overwritesGetter: (ad) => ad.introTextOverwrites,
+                onOverwrite: props.onIntroTextOverwrite,
+                indexGetter: (ad) => ad.introTextIndex,
+                onChangeIndex: props.onChangeSelectedIntroText,
+                sectionContainerClass: style.introTextSectionContainer,
+                arrowClass: style.introTextArrow,
+                carouselContainerClass: style.introTextInputContainer,
+                carouselAlign: "flex-start",
+            })}
+            <div className={style.numberButtons}>
+                {range(props.ads.length).map((i) => {
+                    const selected = i === props.selectedAd;
+                    const num = i + 1;
+
+                    const onClick = () => {
+                        props.onSelectAd(i);
+                    };
+                    const classes = [style.numberButton];
+                    if (selected) {
+                        classes.push(style.selectedNumber);
+                    }
+
+                    return (
+                        <button onClick={onClick} className={classes.join(" ")} key={i}>
+                            {num}
+                        </button>
+                    );
+                })}
+            </div>
+            <div className={style.buttonBar}>
+                <div className={style.leftSideButton}>
+                    <SecondaryButton
+                        disabled={props.ads.length === 1}
+                        color={SecondaryButtonColor.RED}
+                        onClick={props.onDeleteAd}
+                    >
+                        Delete
+                    </SecondaryButton>
+                </div>
+                <div className={style.rightSideButton}>
+                    <SecondaryButton
+                        disabled={props.ads.length === MAX_ADS}
+                        onClick={props.onCreateNewAd}
+                    >
+                        Make Another
+                    </SecondaryButton>
+                </div>
+                <div className={style.rightSideButton}>
+                    <Button onClick={() => {}}>Create Campaign</Button>
+                </div>
+            </div>
         </Page>
     );
 }
-
-// return (
-//     <Page>
-//         <div className={style.headlineSectionContainer}>
-//             <div className={[style.arrowContainer, style.headlineArrow].join(" ")}>
-//                 <ClickableIcon
-//                     icon={getResourceUrl(LeftArrow)}
-//                     disabled={props.ads[props.selectedAd].headlineIndex === 0}
-//                     onClick={() => {
-//                         const newSelected = props.ads[props.selectedAd].headlineIndex - 1;
-//                         if (newSelected >= 0) {
-//                             props.onChangeSelectedHeadline(newSelected);
-//                         }
-//                     }}
-//                     paddingPercent={25}
-//                 />
-//             </div>
-//             <div className={style.headlineInputContainer}>
-//                 <Carousel
-//                     selected={props.ads[props.selectedAd].headlineIndex}
-//                     alignItems="flex-end"
-//                 >
-//                     {range(props.options.headlines.length).map((i) => {
-//                         const overwrites = props.ads[props.selectedAd].headlineOverwrites;
-//                         const hasOverwrite = overwrites.has(i);
-//                         const headline = hasOverwrite
-//                             ? (overwrites.get(i) as string)
-//                             : props.options.headlines[i];
-//                         return (
-//                             <EditableText
-//                                 key={i}
-//                                 text={headline}
-//                                 canReload={hasOverwrite}
-//                                 onTextChange={createOnHeadlineOverwrite(i)}
-//                                 onReload={createOnHeadlineReload(i)}
-//                             />
-//                         );
-//                     })}
-//                 </Carousel>
-//             </div>
-//             <div className={[style.arrowContainer, style.headlineArrow].join(" ")}>
-//                 <ClickableIcon
-//                     icon={getResourceUrl(RightArrow)}
-//                     disabled={
-//                         props.ads[props.selectedAd].headlineIndex ===
-//                         props.options.headlines.length - 1
-//                     }
-//                     onClick={() => {
-//                         const newSelected = props.ads[props.selectedAd].headlineIndex + 1;
-//                         if (newSelected < props.options.headlines.length) {
-//                             props.onChangeSelectedHeadline(newSelected);
-//                         }
-//                     }}
-//                     paddingPercent={25}
-//                 />
-//             </div>
-//         </div>
-//     </Page>
-// );

@@ -21,14 +21,15 @@ export type Props = {
 export default function EditableText(props: Props): JSX.Element {
     let inputRef: HTMLTextAreaElement | null = null;
 
+    const fontClass = props.fontSize === FontSize.LARGE ? style.largeFont : style.smallFont;
+
     return (
         <div className={style.inputContainer}>
-            <div className={[style.inputText, style.hiddenBack].join(" ")}>{props.text}</div>
+            <div className={[style.inputText, fontClass, style.hiddenBack].join(" ")}>
+                {props.text}
+            </div>
             <textarea
-                className={[
-                    style.inputText,
-                    props.fontSize === FontSize.LARGE ? style.largeFont : style.smallFont,
-                ].join(" ")}
+                className={[style.inputText, fontClass].join(" ")}
                 style={{ boxShadow: "none" }}
                 value={props.text}
                 onChange={props.onTextChange}

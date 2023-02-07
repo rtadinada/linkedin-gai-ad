@@ -25,3 +25,45 @@
     width: $font-small-size;
     margin-right: 0.5rem;
 }
+
+.secondaryButton {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    color: #0073b1;
+    border: 0.1rem solid #0073b1;
+    min-height: 3.2rem;
+    border-radius: 0.2rem;
+    padding: 0.4rem 1.6rem;
+    font-size: $font-small-size;
+    font-weight: $font-bold-weight;
+    font-family: $font-family-sans;
+
+    &:hover {
+        background-color: rgba(152, 216, 244, 0.25);
+        box-shadow: 0 0 0 0.1rem #006097;
+    }
+}
+
+.secondaryButtonRed {
+    color: #e10000;
+    border-color: #e10000;
+
+    &:hover {
+        background-color: rgba(244, 152, 152, 0.25);
+        box-shadow: 0 0 0 0.1rem #e10000;
+    }
+}
+
+.secondaryButtonDisabled {
+    color: #bbbbbb;
+    border-color: #909090;
+
+    &:hover {
+        background-color: white;
+        box-shadow: none;
+        cursor: default !important;
+    }
+}

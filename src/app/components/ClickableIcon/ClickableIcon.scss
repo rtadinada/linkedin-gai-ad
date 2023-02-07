@@ -18,8 +18,13 @@
     }
 }
 
+.iconContainerDisable {
+    opacity: 0.3;
+}
+
 .iconContainerDisable:hover {
     background-color: rgba(0, 0, 0, 0);
+    cursor: default !important;
 }
 
 .icon {

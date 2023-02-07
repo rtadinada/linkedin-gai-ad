@@ -1,8 +1,9 @@
-import CreatePage, { AdSelection, OverwriteFunc } from "components/CreatePage/CreatePage";
+import CreatePage, { AdSelection, MAX_ADS, OverwriteFunc } from "components/CreatePage/CreatePage";
 import GeneratePage from "components/GeneratePage/GeneratePage";
 import Modal, { ModalSize } from "components/Modal/Modal";
 import { generateAllOptions, GeneratedOptions } from "lib/openai-queries";
 import { getLandingPageText } from "lib/page-content";
+import { removeTabNewline } from "lib/util";
 import React from "react";
 
 type Props = {
@@ -81,6 +82,42 @@ function selectHeadline(prevState: State, newHeadlineIndex: number) {
     return updateAd(prevState, adIndex, newAd);
 }
 
+function updateIntroTextOverwrite(prevState: State, introTextIndex: number, overwrite: string) {
+    const adIndex = prevState.selectedAd;
+
+    const newOverwites = new Map(prevState.ads[adIndex].introTextOverwrites);
+    if (overwrite !== prevState.generatedOptions?.introTexts[introTextIndex]) {
+        newOverwites.set(introTextIndex, overwrite);
+    } else {
+        newOverwites.delete(introTextIndex);
+    }
+
+    const newAd: AdSelection = {
+        ...prevState.ads[adIndex],
+        introTextOverwrites: newOverwites,
+    };
+
+    return updateAd(prevState, adIndex, newAd);
+}
+
+function selectIntroText(prevState: State, newIntroTextIndex: number) {
+    const adIndex = prevState.selectedAd;
+    const prevAd = prevState.ads[adIndex];
+    const prevIndex = prevAd.introTextIndex;
+
+    let newAd: AdSelection = {
+        ...prevAd,
+        introTextIndex: newIntroTextIndex,
+    };
+    if (newAd.introTextOverwrites.get(prevIndex) === "") {
+        const newOverwites = new Map(prevState.ads[adIndex].introTextOverwrites);
+        newOverwites.delete(prevIndex);
+        newAd = { ...newAd, introTextOverwrites: newOverwites };
+    }
+
+    return updateAd(prevState, adIndex, newAd);
+}
+
 function selectImage(prevState: State, newImageIndex: number) {
     const adIndex = prevState.selectedAd;
     const prevAd = prevState.ads[adIndex];
@@ -99,6 +136,7 @@ enum DisplayPage {
 }
 
 const MAX_HEADLINE_LENGTH = 50;
+const MAX_INTRO_TEXT_LENGTH = 400;
 
 export default class App extends React.Component<Props, State> {
     state = makeInitialState();
@@ -133,6 +171,7 @@ export default class App extends React.Component<Props, State> {
         const size = page === DisplayPage.GENERATE ? ModalSize.SMALL : ModalSize.LARGE;
 
         const onHeadlineOverwrite: OverwriteFunc = (optionIndex, value) => {
+            value = removeTabNewline(value);
             if (value.length > MAX_HEADLINE_LENGTH) {
                 return;
             }
@@ -142,8 +181,57 @@ export default class App extends React.Component<Props, State> {
             this.setState((prevState) => selectHeadline(prevState, newIndex));
         };
 
+        const onIntroTextOverwrite: OverwriteFunc = (optionIndex, value) => {
+            value = removeTabNewline(value);
+            if (value.length > MAX_INTRO_TEXT_LENGTH) {
+                console.log("max");
+                return;
+            }
+            this.setState((prevState) => updateIntroTextOverwrite(prevState, optionIndex, value));
+        };
+        const onChangeSelectedIntroText = (newIndex: number) => {
+            this.setState((prevState) => selectIntroText(prevState, newIndex));
+        };
+
         const onChangeSelectedImage = (newIndex: number) => {
             this.setState((prevState) => selectImage(prevState, newIndex));
+        };
+
+        const onCreateNewAd = () => {
+            this.setState((prevState) => {
+                let result = {};
+                if (prevState.ads.length < MAX_ADS) {
+                    result = {
+                        ads: [...prevState.ads, makeNewAdSelection()],
+                        selectedAd: prevState.ads.length,
+                    };
+                }
+
+                return result;
+            });
+        };
+
+        const onSelectAd = (i: number) => {
+            this.setState({ selectedAd: i });
+        };
+
+        const onDeleteAd = () => {
+            this.setState((prevState) => {
+                let result = {};
+                if (prevState.ads.length > 1) {
+                    const prevAds = prevState.ads;
+                    const i = prevState.selectedAd;
+                    const ads = [...prevAds.slice(0, i), ...prevAds.slice(i + 1)];
+                    const selectedAd = Math.min(i, ads.length - 1);
+
+                    result = {
+                        ads,
+                        selectedAd,
+                    };
+                }
+
+                return result;
+            });
         };
 
         return (
@@ -165,7 +253,12 @@ export default class App extends React.Component<Props, State> {
                             selectedAd={this.state.selectedAd}
                             onHeadlineOverwrite={onHeadlineOverwrite}
                             onChangeSelectedHeadline={onChangeSelectedHeadline}
+                            onIntroTextOverwrite={onIntroTextOverwrite}
+                            onChangeSelectedIntroText={onChangeSelectedIntroText}
                             onChangeSelectedImage={onChangeSelectedImage}
+                            onSelectAd={onSelectAd}
+                            onCreateNewAd={onCreateNewAd}
+                            onDeleteAd={onDeleteAd}
                         />
                     )}
                 </Modal>
