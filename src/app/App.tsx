@@ -98,7 +98,7 @@ enum DisplayPage {
     CREATE,
 }
 
-const MAX_HEADLINE_LENGTH = 100;
+const MAX_HEADLINE_LENGTH = 50;
 
 export default class App extends React.Component<Props, State> {
     state = makeInitialState();

@@ -2,7 +2,7 @@ import LeftArrow from "common/images/arrow-left.svg";
 import RightArrow from "common/images/arrow-right.svg";
 import Carousel from "components/Carousel/Carousel";
 import ClickableIcon from "components/ClickableIcon/ClickableIcon";
-import EditableText from "components/EditableText/EditableText";
+import EditableText, { FontSize } from "components/EditableText/EditableText";
 import Page from "components/Page/Page";
 import { getResourceUrl } from "lib/chrome-utils";
 import { GeneratedOptions } from "lib/openai-queries";
@@ -85,6 +85,7 @@ export default function CreatePage(props: Props): JSX.Element {
 
     type TextInputCreatorOptions = {
         options: string[];
+        fontSize: FontSize;
         overwritesGetter: (ad: AdSelection) => Map<number, string>;
         onOverwrite: OverwriteFunc;
     };
@@ -108,6 +109,7 @@ export default function CreatePage(props: Props): JSX.Element {
                 <EditableText
                     key={i}
                     text={text}
+                    fontSize={opts.fontSize}
                     canReload={hasOverwrite}
                     onTextChange={onTextChange}
                     onReload={onReload}
@@ -127,6 +129,7 @@ export default function CreatePage(props: Props): JSX.Element {
 
     type TextInputCarouselOptions = {
         options: string[];
+        fontSize: FontSize;
         overwritesGetter: (ad: AdSelection) => Map<number, string>;
         onOverwrite: OverwriteFunc;
         indexGetter: (ad: AdSelection) => number;
@@ -159,6 +162,7 @@ export default function CreatePage(props: Props): JSX.Element {
         <Page justifyContent="flex-start">
             {createTextInputCarousel({
                 options: props.options.headlines,
+                fontSize: FontSize.LARGE,
                 overwritesGetter: (ad) => ad.headlineOverwrites,
                 onOverwrite: props.onHeadlineOverwrite,
                 indexGetter: (ad) => ad.headlineIndex,

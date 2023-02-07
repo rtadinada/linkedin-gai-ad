@@ -5,8 +5,14 @@ import React from "react";
 
 import style from "./EditableText.scss";
 
+export enum FontSize {
+    LARGE,
+    SMALL,
+}
+
 export type Props = {
     text: string;
+    fontSize: FontSize;
     canReload: boolean;
     onTextChange: React.ChangeEventHandler<HTMLTextAreaElement>;
     onReload: () => void;
@@ -17,9 +23,12 @@ export default function EditableText(props: Props): JSX.Element {
 
     return (
         <div className={style.inputContainer}>
-            <div className={`${style.inputText} ${style.hiddenBack}`}>{props.text}</div>
+            <div className={[style.inputText, style.hiddenBack].join(" ")}>{props.text}</div>
             <textarea
-                className={style.inputText}
+                className={[
+                    style.inputText,
+                    props.fontSize === FontSize.LARGE ? style.largeFont : style.smallFont,
+                ].join(" ")}
                 style={{ boxShadow: "none" }}
                 value={props.text}
                 onChange={props.onTextChange}

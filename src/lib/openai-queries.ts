@@ -18,6 +18,10 @@ function makePrompt(content: string, prompt: string) {
     return `${truncatedContent}\n${prompt}\n`;
 }
 
+function sanitizeOutput(s: string): string {
+    return s.replace(/[\n\t]/g, "");
+}
+
 export type GeneratedOptions = {
     headlines: string[];
     introTexts: string[];
@@ -27,13 +31,15 @@ export type GeneratedOptions = {
 export async function generateHeadlines(content: string): Promise<string[] | null> {
     const prompt = makePrompt(content, HEADLINE_PROMPT);
 
-    return makeChatGPTQuery(prompt, 50, NUM_OPTIONS);
+    const responses = await makeChatGPTQuery(prompt, 8, NUM_OPTIONS);
+    return responses?.map(sanitizeOutput) || null;
 }
 
 export async function generateIntroText(content: string): Promise<string[] | null> {
     const prompt = makePrompt(content, INTRO_TEXT_PROMPT);
 
-    return makeChatGPTQuery(prompt, 500, NUM_OPTIONS);
+    const responses = await makeChatGPTQuery(prompt, 500, NUM_OPTIONS);
+    return responses?.map(sanitizeOutput) || null;
 }
 
 async function generateImagePrompt(content: string): Promise<string | null> {
