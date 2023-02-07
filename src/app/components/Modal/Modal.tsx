@@ -1,8 +1,9 @@
+import X from "common/images/x.svg";
+import ClickableIcon from "components/ClickableIcon/ClickableIcon";
 import { getResourceUrl } from "lib/chrome-utils";
 import React from "react";
 
 import style from "./Modal.scss";
-import X from "./x.svg";
 
 export enum ModalSize {
     LARGE,
@@ -25,9 +26,9 @@ export default function Modal(props: Props): JSX.Element {
         <div className={style.backdrop}>
             <div className={classNames.join(" ")}>
                 {props.children}
-                <button onClick={props.onClose} className={style.xContainer}>
-                    <img src={getResourceUrl(X)} />
-                </button>
+                <div className={style.xContainer}>
+                    <ClickableIcon icon={getResourceUrl(X)} onClick={props.onClose} />
+                </div>
             </div>
         </div>
     );
