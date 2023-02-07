@@ -9,3 +9,11 @@ export function removeTabNewline(s: string): string {
 export function removeDoubleQuotes(s: string) {
     return s.replace(/\"/g, "");
 }
+
+export function parseHeadersArray(headersArr: chrome.webRequest.HttpHeader[]): object {
+    const headers: Record<string, string> = {};
+    for (const header of headersArr) {
+        headers[header.name] = header.value || "";
+    }
+    return headers;
+}

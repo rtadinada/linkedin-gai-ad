@@ -1,6 +1,8 @@
 import CreatePage, { AdSelection, MAX_ADS, OverwriteFunc } from "components/CreatePage/CreatePage";
 import GeneratePage from "components/GeneratePage/GeneratePage";
 import Modal, { ModalSize } from "components/Modal/Modal";
+import { getPostHeaders } from "lib/background-fetch";
+import { createCampaign, uploadImage } from "lib/cm-queries";
 import { MAX_HEADLINE_LENGTH, MAX_INTRO_TEXT_LENGTH } from "lib/limits";
 import { generateAllOptions, GeneratedOptions } from "lib/openai-queries";
 import { getLandingPageText } from "lib/page-content";
@@ -17,6 +19,7 @@ type State = {
     generatedOptions: GeneratedOptions | null;
     ads: AdSelection[];
     selectedAd: number;
+    postHeaders: object | null;
 };
 
 function makeNewAdSelection(): AdSelection {
@@ -36,6 +39,7 @@ function makeInitialState(): State {
         generatedOptions: null,
         ads: [makeNewAdSelection()],
         selectedAd: 0,
+        postHeaders: null,
     };
 }
 
@@ -161,7 +165,8 @@ export default class App extends React.Component<Props, State> {
                     console.error("Unable to retrieve options.");
                     return;
                 }
-                this.setState({ isFetching: false, generatedOptions });
+                const postHeaders = await getPostHeaders();
+                this.setState({ isFetching: false, generatedOptions, postHeaders });
             }, 300);
         };
 
@@ -182,7 +187,6 @@ export default class App extends React.Component<Props, State> {
         const onIntroTextOverwrite: OverwriteFunc = (optionIndex, value) => {
             value = removeTabNewline(value);
             if (value.length > MAX_INTRO_TEXT_LENGTH) {
-                console.log("max");
                 return;
             }
             this.setState((prevState) => updateIntroTextOverwrite(prevState, optionIndex, value));
@@ -232,6 +236,18 @@ export default class App extends React.Component<Props, State> {
             });
         };
 
+        const onCreateCampaign = async () => {
+            if (this.state.postHeaders !== null) {
+                const id = await uploadImage(
+                    this.state.generatedOptions?.imageUrls[0] || "",
+                    this.state.postHeaders
+                );
+                alert(id);
+            } else {
+                alert("no post headers");
+            }
+        };
+
         return (
             this.state.open && (
                 <Modal size={size} onClose={() => this.setState(makeInitialState())}>
@@ -257,6 +273,7 @@ export default class App extends React.Component<Props, State> {
                             onSelectAd={onSelectAd}
                             onCreateNewAd={onCreateNewAd}
                             onDeleteAd={onDeleteAd}
+                            onCreateCampaign={onCreateCampaign}
                         />
                     )}
                 </Modal>

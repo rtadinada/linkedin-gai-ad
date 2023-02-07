@@ -14,8 +14,6 @@ declare global {
 
 const reportingBarClass = "reporting-actions-bar__actions-container";
 
-// window.addEventListener("load", run, false);
-
 function run() {
     const jsInitChecktimer = setInterval(checkForBarLoaded, 11);
 

@@ -18,5 +18,6 @@
             "matches": ["https://www.linkedin.com/*"]
         }
     ],
+    "permissions": ["webRequest"],
     "host_permissions": ["https://*/*"]
 }

@@ -29,6 +29,7 @@ export type Props = {
     onSelectAd: (index: number) => void;
     onCreateNewAd: () => void;
     onDeleteAd: () => void;
+    onCreateCampaign: () => void;
 };
 
 export type AdSelection = {
@@ -40,8 +41,6 @@ export type AdSelection = {
 };
 
 export default function CreatePage(props: Props): JSX.Element {
-    console.log(props);
-
     const selectedAd = props.ads[props.selectedAd];
 
     type CarouselOptions = {
@@ -246,7 +245,7 @@ export default function CreatePage(props: Props): JSX.Element {
                     </SecondaryButton>
                 </div>
                 <div className={style.rightSideButton}>
-                    <Button onClick={() => {}}>Create Campaign</Button>
+                    <Button onClick={props.onCreateCampaign}>Create Campaign</Button>
                 </div>
             </div>
         </Page>
