@@ -20,6 +20,8 @@ type State = {
     ads: AdSelection[];
     selectedAd: number;
     postHeaders: object | null;
+    isCreatingCampaign: boolean;
+    campaignId: number | null;
 };
 
 function makeNewAdSelection(): AdSelection {
@@ -40,6 +42,8 @@ function makeInitialState(): State {
         ads: [makeNewAdSelection()],
         selectedAd: 0,
         postHeaders: null,
+        isCreatingCampaign: false,
+        campaignId: null,
     };
 }
 
@@ -236,20 +240,23 @@ export default class App extends React.Component<Props, State> {
             });
         };
 
-        const onCreateCampaign = async () => {
-            if (this.state.postHeaders === null || this.state.generatedOptions === null) {
-                console.error("missing state");
-                console.error(this.state);
-                return;
-            }
-            const id = await createCampaignAndAds(
-                `Generated Campaign - ${Date.now()}`,
-                this.state.urlInput,
-                this.state.ads,
-                this.state.generatedOptions,
-                this.state.postHeaders
-            );
-            alert(id);
+        const onCreateCampaign = () => {
+            this.setState({ isCreatingCampaign: true });
+            setTimeout(async () => {
+                if (this.state.postHeaders === null || this.state.generatedOptions === null) {
+                    console.error("missing state");
+                    console.error(this.state);
+                    return;
+                }
+                const campaignId = await createCampaignAndAds(
+                    `Generated Campaign - ${Date.now()}`,
+                    this.state.urlInput,
+                    this.state.ads,
+                    this.state.generatedOptions,
+                    this.state.postHeaders
+                );
+                this.setState({ isCreatingCampaign: false, campaignId });
+            }, 300);
         };
 
         return (
