@@ -202,7 +202,10 @@ export default class SettingsPage extends React.Component<Props, State> {
                             </td>
                         </tr>
                         <tr>
-                            <td>Image styles (input as JSON array of strings): </td>
+                            <td>
+                                Image styles (input as JSON array of strings, 1 is randomly
+                                selected):{" "}
+                            </td>
                             <td>
                                 <input
                                     className={style.promptInputLarge}
