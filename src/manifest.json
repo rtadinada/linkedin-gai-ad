@@ -6,7 +6,7 @@
     "content_scripts": [
         {
             "js": ["content.bundle.js"],
-            "matches": ["https://www.linkedin.com/campaignmanager/accounts/*/campaigns*"]
+            "matches": ["https://www.linkedin.com/campaignmanager/*"]
         }
     ],
     "background": {

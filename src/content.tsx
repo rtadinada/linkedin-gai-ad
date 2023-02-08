@@ -13,6 +13,7 @@ declare global {
 }
 
 const reportingBarClass = "reporting-actions-bar__actions-container";
+const buttonContainerId = "gai-open-button-cnt";
 
 function run() {
     const jsInitChecktimer = setInterval(checkForBarLoaded, 11);
@@ -25,25 +26,20 @@ function run() {
     }
 }
 
-function load() {
-    const appContainer = document.createElement("div");
-    appContainer.id = "gai-ad-root";
-    document.body.prepend(appContainer);
+function reloadButton() {
+    setInterval(checkForBarLoadedAndButtonGone, 111);
 
-    const appRoot = createRoot(appContainer);
-    appRoot.render(
-        <React.StrictMode>
-            <App
-                ref={(app) => {
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    window.App = app!;
-                }}
-            />
-        </React.StrictMode>
-    );
+    function checkForBarLoadedAndButtonGone() {
+        const buttonLoaded = !!document.getElementById(buttonContainerId);
+        if (!buttonLoaded && document.getElementsByClassName(reportingBarClass).length > 0) {
+            loadButton();
+        }
+    }
+}
 
+function loadButton() {
     const buttonContainer = document.createElement("div");
-    buttonContainer.id = "gai-open-button-cnt";
+    buttonContainer.id = buttonContainerId;
     buttonContainer.style.margin = "4px";
 
     const reportingBar = document.getElementsByClassName(reportingBarClass).item(0);
@@ -63,6 +59,26 @@ function load() {
             </Button>
         </React.StrictMode>
     );
+}
+
+function load() {
+    const appContainer = document.createElement("div");
+    appContainer.id = "gai-ad-root";
+    document.body.prepend(appContainer);
+
+    const appRoot = createRoot(appContainer);
+    appRoot.render(
+        <React.StrictMode>
+            <App
+                ref={(app) => {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    window.App = app!;
+                }}
+            />
+        </React.StrictMode>
+    );
+    loadButton();
+    reloadButton();
 }
 
 run();

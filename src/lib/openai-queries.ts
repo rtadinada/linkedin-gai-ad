@@ -48,7 +48,7 @@ const IMAGE_PROMPT_PROMPT =
 const IMAGE_STYLES = [
     "in the style of an Isometric Illustration",
     "in a minamalist flat design",
-    "as a pencil drawing",
+    "as a line drawing",
 ];
 
 function truncate(input: string): string {
