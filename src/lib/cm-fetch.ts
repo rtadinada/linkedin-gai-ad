@@ -1,4 +1,4 @@
-import { getAccountId, getCompanyId } from "./account-info";
+import { getAccountId, getCampaignGroupId, getCompanyId } from "./account-info";
 import { downloadImage } from "./background-fetch";
 
 const CAMPAIGN_GROUP = 627520796;
@@ -60,11 +60,18 @@ async function errorOnBadStatus(
 export async function createCampaign(name: string, postHeaders: object): Promise<number> {
     const params = { name, postHeaders };
 
-    const requestBody: Campaign = { ...DEFAULT_CAMPAIGN_FIELDS, name };
+    const campaignGroupId = await getCampaignGroupId();
+
+    const requestBody: Campaign = {
+        ...DEFAULT_CAMPAIGN_FIELDS,
+        name,
+        accountId: getAccountId(),
+        campaignGroupId: await getCampaignGroupId(),
+    };
     const headers = { ...CREATE_CAMPAIGN_DEFAULT_HEADERS, ...postHeaders };
     const options: RequestInit = {
         headers,
-        referrer: `https://www.linkedin.com/campaignmanager/accounts/509082510/campaigns/new/details?campaignGroupId=${CAMPAIGN_GROUP}`,
+        referrer: `https://www.linkedin.com/campaignmanager/accounts/509082510/campaigns/new/details?campaignGroupId=${campaignGroupId}`,
         referrerPolicy: "strict-origin-when-cross-origin",
         body: JSON.stringify(requestBody),
         method: "POST",
@@ -179,10 +186,12 @@ export async function createAd(
             },
         ],
     };
+    const companyId = getCompanyId();
     const sponsoredUpdateContent: SponsoredUpdateContent = {
         ...DEFAULT_CREATIVE_CREATION_FIELDS.sponsoredUpdateContent,
         accountId: getAccountId(),
-        companyId: getCompanyId(),
+        companyId: companyId,
+        authorUrn: `urn:li:company:${companyId}`,
         userGeneratedAdContent,
     };
     const requestBody: CreativeCreationRequest = {
@@ -237,7 +246,7 @@ const CREATE_CAMPAIGN_DEFAULT_HEADERS = {
 
 const DEFAULT_CAMPAIGN_FIELDS: Campaign = {
     name: "This is my campaign name",
-    accountId: 509082510,
+    accountId: 123,
     audienceExpansionEnabled: false,
     objectiveType: "WEBSITE_VISIT",
     adFormats: ["STANDARD_SPONSORED_CONTENT"],
@@ -298,7 +307,7 @@ const DEFAULT_CAMPAIGN_FIELDS: Campaign = {
             exclude: [],
         },
     },
-    campaignGroupId: CAMPAIGN_GROUP,
+    campaignGroupId: 123,
     creativeSelection: "OPTIMIZED",
     status: "DRAFT",
     costType: "CPM",
@@ -377,14 +386,14 @@ const DEFAULT_IMAGE_UPLOAD_HEADERS = {
 };
 
 const DEFAULT_CREATIVE_CREATION_FIELDS: CreativeCreationRequest = {
-    campaignId: 198365086,
+    campaignId: 123,
     adName: "ad",
     status: "ACTIVE",
     type: "SPONSORED_STATUS_UPDATE",
     sponsoredUpdateContent: {
-        accountId: 509082510,
-        authorUrn: "urn:li:company:5025865",
-        companyId: 5025865,
+        accountId: 123,
+        authorUrn: "urn:li:company:123",
+        companyId: 123,
         state: { lifecycleState: "PUBLISHED" },
         visibility: "DARK",
         userGeneratedAdContent: {

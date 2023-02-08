@@ -12,12 +12,13 @@
     "background": {
         "service_worker": "background.bundle.js"
     },
+    "options_page": "settings.html",
     "web_accessible_resources": [
         {
             "resources": ["/assets/*"],
             "matches": ["https://www.linkedin.com/*"]
         }
     ],
-    "permissions": ["webRequest"],
+    "permissions": ["storage", "webRequest"],
     "host_permissions": ["https://*/*"]
 }

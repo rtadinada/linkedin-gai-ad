@@ -1,3 +1,5 @@
+import * as Settings from "lib/settings";
+
 function extractCompanyId(url: string): number {
     const companyPrefix = "https://www.linkedin.com/company/";
     if (!url.startsWith(companyPrefix)) {
@@ -30,4 +32,8 @@ export function getCompanyId(): number {
         }
     }
     return -1;
+}
+
+export async function getCampaignGroupId(): Promise<number> {
+    return Settings.getCampaignGroup();
 }

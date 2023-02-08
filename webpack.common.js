@@ -1,5 +1,6 @@
 import CopyWebpackPlugin from "copy-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
+import HtmlWebpackPlugin from "html-webpack-plugin";
 import * as path from "path";
 import { fileURLToPath } from "url";
 
@@ -12,6 +13,7 @@ const config = {
     entry: {
         content: "./src/content.tsx",
         background: "./src/background.ts",
+        settings: "./src/settings.tsx",
     },
     mode: "development",
     devtool: "inline-source-map",
@@ -52,6 +54,11 @@ const config = {
         },
     },
     plugins: [
+        new HtmlWebpackPlugin({
+            template: "./src/settings.html",
+            filename: "settings.html",
+            chunks: ["settings"],
+        }),
         new ForkTsCheckerWebpackPlugin({
             async: false,
         }),
