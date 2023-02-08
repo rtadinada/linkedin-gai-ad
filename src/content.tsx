@@ -59,7 +59,7 @@ function load() {
                 }}
                 icon={getResourceUrl(BeakerImage)}
             >
-                Generate Ads
+                Auto-Generate
             </Button>
         </React.StrictMode>
     );

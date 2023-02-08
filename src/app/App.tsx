@@ -20,7 +20,6 @@ type State = {
     ads: AdSelection[];
     selectedAd: number;
     postHeaders: object | null;
-    isCreatingCampaign: boolean;
     campaignId: number | null;
 };
 
@@ -42,7 +41,6 @@ function makeInitialState(): State {
         ads: [makeNewAdSelection()],
         selectedAd: 0,
         postHeaders: null,
-        isCreatingCampaign: false,
         campaignId: null,
     };
 }
@@ -148,7 +146,11 @@ export default class App extends React.Component<Props, State> {
     state = makeInitialState();
 
     getPage = (): DisplayPage => {
-        if (this.state.generatedOptions !== null) {
+        if (
+            !this.state.isFetching &&
+            !this.state.campaignId &&
+            this.state.generatedOptions !== null
+        ) {
             return DisplayPage.CREATE;
         }
         return DisplayPage.GENERATE;
@@ -241,7 +243,7 @@ export default class App extends React.Component<Props, State> {
         };
 
         const onCreateCampaign = () => {
-            this.setState({ isCreatingCampaign: true });
+            this.setState({ isFetching: true });
             setTimeout(async () => {
                 if (this.state.postHeaders === null || this.state.generatedOptions === null) {
                     console.error("missing state");
@@ -249,14 +251,21 @@ export default class App extends React.Component<Props, State> {
                     return;
                 }
                 const campaignId = await createCampaignAndAds(
-                    `Generated Campaign - ${Date.now()}`,
+                    this.state.generatedOptions.campaignName,
                     this.state.urlInput,
                     this.state.ads,
                     this.state.generatedOptions,
                     this.state.postHeaders
                 );
-                this.setState({ isCreatingCampaign: false, campaignId });
+                this.setState({ isFetching: false, campaignId });
             }, 300);
+        };
+
+        const onGoToCampaign = () => {
+            window.open(
+                `https://www.linkedin.com/campaignmanager/accounts/509082510/campaigns/${this.state.campaignId}/creatives`,
+                "_blank"
+            );
         };
 
         return (
@@ -268,6 +277,8 @@ export default class App extends React.Component<Props, State> {
                             urlInput={this.state.urlInput}
                             onInputChange={(e) => this.setState({ urlInput: e.target.value })}
                             onSubmit={onLandingPageSubmit}
+                            campaignId={this.state.campaignId}
+                            onGoToCampaign={onGoToCampaign}
                         />
                     )}
                     {page === DisplayPage.CREATE && (
