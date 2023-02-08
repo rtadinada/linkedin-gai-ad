@@ -1,8 +1,7 @@
+import { getAccountId, getCompanyId } from "./account-info";
 import { downloadImage } from "./background-fetch";
 
 const CAMPAIGN_GROUP = 627520796;
-const ACCOUNT_ID = 509082510;
-const COMPANY_OWNER_ID = 5025865;
 
 function extractId(text: string) {
     const matches = text.match(/\d+/);
@@ -102,6 +101,8 @@ async function uploadImage(url: string, postHeaders: object): Promise<string> {
         ...DEFAULT_REGISTER_IMAGE_UPLOAD_FIELDS,
         assetName,
         fileSize,
+        accountId: getAccountId(),
+        ownerId: getCompanyId(),
     };
     const registerHeaders = { ...DEFAULT_REGISTER_IMAGE_UPLOAD_HEADERS, ...postHeaders };
     const options: RequestInit = {
@@ -180,8 +181,8 @@ export async function createAd(
     };
     const sponsoredUpdateContent: SponsoredUpdateContent = {
         ...DEFAULT_CREATIVE_CREATION_FIELDS.sponsoredUpdateContent,
-        accountId: ACCOUNT_ID,
-        companyId: COMPANY_OWNER_ID,
+        accountId: getAccountId(),
+        companyId: getCompanyId(),
         userGeneratedAdContent,
     };
     const requestBody: CreativeCreationRequest = {
@@ -340,9 +341,9 @@ const DEFAULT_REGISTER_IMAGE_UPLOAD_HEADERS = {
 
 const DEFAULT_REGISTER_IMAGE_UPLOAD_FIELDS: RegisterImageUpload = {
     fileSize: 2121380,
-    ownerId: COMPANY_OWNER_ID,
+    ownerId: 123,
     ownerType: "COMPANY",
-    accountId: ACCOUNT_ID,
+    accountId: 234,
     assetName:
         "DALL·E 2022-12-14 17.39.30 - a potato hatching out of a pink egg in a castle as an impressionist painting.png",
     addToAssetLibrary: true,
