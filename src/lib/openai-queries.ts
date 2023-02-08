@@ -1,3 +1,5 @@
+import * as Settings from "lib/settings";
+
 import { makeChatGPTQuery, makeDallEQuery } from "./background-fetch";
 import { MAX_HEADLINE_LENGTH, MAX_INTRO_TEXT_LENGTH } from "./limits";
 import { removeDoubleQuotes, removeTabNewline } from "./util";
@@ -14,42 +16,30 @@ function getNumTokens(numCharacters: number): number {
     return Math.floor(numCharacters / 3.5);
 }
 
-const CAMPAIGN_NAME_PROMPT =
-    "Being very brief (in 4 words or less), come up with a name for an ad campaign for the product described above:";
-const HEADLINE_PROMPT = `${createCharacterPrompt(
-    MAX_HEADLINE_LENGTH
-)}, write a compelling headline to sell the product described above:`;
-const INTRO_TEXT_PROMPT = `${createCharacterPrompt(
-    MAX_INTRO_TEXT_LENGTH
-)}, write a compelling ad copy to sell the product described above:`;
+async function makeHeadlinePrompt() {
+    return `${createCharacterPrompt(
+        MAX_HEADLINE_LENGTH
+    )}, ${await Settings.getHeadlinePrompt()} the product described above:`;
+}
+
+async function makeIntroTextPrompt() {
+    return `${createCharacterPrompt(
+        MAX_INTRO_TEXT_LENGTH
+    )}, ${await Settings.getIntroTextPrompt()} the product described above:`;
+}
+
+async function makeImagePromptPrompt() {
+    return `${await Settings.getImagePromptPrompt()} with product described above:`;
+}
 
 function getRandomString(strings: string[]): string {
     const randomIndex = Math.floor(Math.random() * strings.length);
     return strings[randomIndex];
 }
 
-// const IMAGE_ENVIRONMENTS = [
-//     "in an artistic building",
-//     "on the top floor of a skyscraper",
-//     "in a city street",
-//     "in the middle of a bustling office",
-// ];
-// function makeImagePromptPrompt(environment: string) {
-//     return (
-//         "In 15 words or less, describe instructions you would give to a graphic " +
-//         "designer to make an ad that showcases a major selling point of the product above. " +
-//         "Use the category of the product instead of any specific product name, and consider having a person use and enjoy the " +
-//         `product ${environment}:`
-//     );
-// }
-const IMAGE_PROMPT_PROMPT =
-    "In 15 words or less, without using the names of any products, describe a scene in a artistic building that includes a view of nature with someone happily making something with product described above:";
-
-const IMAGE_STYLES = [
-    "in the style of an Isometric Illustration",
-    "in a minamalist flat design",
-    "as a line drawing",
-];
+async function getRandomStyle() {
+    return getRandomString(await Settings.getImageStyles());
+}
 
 function truncate(input: string): string {
     return input.substring(0, 15000) + ".";
@@ -69,7 +59,7 @@ export type GeneratedOptions = {
 
 export async function generateCampaignName(content: string): Promise<string | null> {
     console.log({ content });
-    const prompt = makePrompt(content, CAMPAIGN_NAME_PROMPT);
+    const prompt = makePrompt(content, await Settings.getCampaignNamePrompt());
     const results = await makeChatGPTQuery(prompt, 15, 1);
     if (results === null) {
         return null;
@@ -84,7 +74,7 @@ export async function generateCampaignName(content: string): Promise<string | nu
 }
 
 export async function generateHeadlines(content: string): Promise<string[] | null> {
-    const prompt = makePrompt(content, HEADLINE_PROMPT);
+    const prompt = makePrompt(content, await makeHeadlinePrompt());
 
     const responses = await makeChatGPTQuery(
         prompt,
@@ -100,7 +90,7 @@ export async function generateHeadlines(content: string): Promise<string[] | nul
 }
 
 export async function generateIntroText(content: string): Promise<string[] | null> {
-    const prompt = makePrompt(content, INTRO_TEXT_PROMPT);
+    const prompt = makePrompt(content, await makeIntroTextPrompt());
 
     const responses = await makeChatGPTQuery(
         prompt,
@@ -113,7 +103,7 @@ export async function generateIntroText(content: string): Promise<string[] | nul
 }
 
 async function generateImagePrompt(content: string): Promise<string | null> {
-    const prePrompt = makePrompt(content, IMAGE_PROMPT_PROMPT);
+    const prePrompt = makePrompt(content, await makeImagePromptPrompt());
     const results = await makeChatGPTQuery(prePrompt, 500, 1);
     if (results === null) {
         return null;
@@ -124,7 +114,7 @@ async function generateImagePrompt(content: string): Promise<string | null> {
         result = result.substring(0, result.length - 1);
     }
 
-    return `${result}, ${getRandomString(IMAGE_STYLES)}.`;
+    return `${result}, ${await getRandomStyle()}.`;
 }
 
 export async function generateImages(content: string): Promise<string[] | null> {
