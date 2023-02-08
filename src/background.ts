@@ -57,10 +57,10 @@ async function chatGPTQueryHandler(
     sender: chrome.runtime.MessageSender,
     sendResponse: (a: ChatGPTResult) => void
 ) {
-    // const { input, maxTokens, numResponses } = request;
-    // const responses = await getCompletions(input, maxTokens, numResponses);
-    // sendResponse({ responses });
-    sendResponse({ responses: ["a", "b", "c", "d", "e"] });
+    const { input, maxTokens, numResponses } = request;
+    const responses = await getCompletions(input, maxTokens, numResponses);
+    sendResponse({ responses });
+    // sendResponse({ responses: ["a", "b", "c", "d", "e"] });
 }
 
 async function dallEQueryHandler(
@@ -68,17 +68,17 @@ async function dallEQueryHandler(
     sender: chrome.runtime.MessageSender,
     sendResponse: (a: DallEResult) => void
 ) {
-    // const { input, numResponses } = request;
-    // const urls = await getImages(input, numResponses);
-    // sendResponse({ urls });
-    const urls = [
-        "https://oaidalleapiprodscus.blob.core.windows.net/private/org-jUwdPC1yQ2yFTaHEvIqGTAJQ/user-qj8NOB6EIDgkv1JSt1j5kHxm/img-rD2OlwFz3SzrvLC78MVu4mnR.png?st=2023-02-07T21%3A52%3A58Z&se=2023-02-07T23%3A52%3A58Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-02-07T21%3A30%3A52Z&ske=2023-02-08T21%3A30%3A52Z&sks=b&skv=2021-08-06&sig=HHWcR06joxWE9gg1mMjJxmjUl3/ktT41me1IGSYqxa0%3D",
-        "https://api.time.com/wp-content/uploads/2022/11/GettyImages-1358149692.jpg",
-        "https://www.state.gov/wp-content/uploads/2021/06/AI-Motherboard-scaled.jpg",
-        "https://www.simplilearn.com/ice9/free_resources_article_thumb/Types_of_Artificial_Intelligence.jpg",
-        "https://www.simplilearn.com/ice9/free_resources_article_thumb/Types_of_Artificial_Intelligence.jpg",
-    ];
+    const { input, numResponses } = request;
+    const urls = await getImages(input, numResponses);
     sendResponse({ urls });
+    // const urls = [
+    //     "https://www.state.gov/wp-content/uploads/2021/06/AI-Motherboard-scaled.jpg",
+    //     "https://api.time.com/wp-content/uploads/2022/11/GettyImages-1358149692.jpg",
+    //     "https://www.state.gov/wp-content/uploads/2021/06/AI-Motherboard-scaled.jpg",
+    //     "https://www.simplilearn.com/ice9/free_resources_article_thumb/Types_of_Artificial_Intelligence.jpg",
+    //     "https://www.simplilearn.com/ice9/free_resources_article_thumb/Types_of_Artificial_Intelligence.jpg",
+    // ];
+    // sendResponse({ urls });
 }
 
 async function postHeadersQueryHandler(

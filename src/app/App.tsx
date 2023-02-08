@@ -2,7 +2,7 @@ import CreatePage, { AdSelection, MAX_ADS, OverwriteFunc } from "components/Crea
 import GeneratePage from "components/GeneratePage/GeneratePage";
 import Modal, { ModalSize } from "components/Modal/Modal";
 import { getPostHeaders } from "lib/background-fetch";
-import { createCampaign, uploadImage } from "lib/cm-queries";
+import { createCampaignAndAds } from "lib/cm-queries";
 import { MAX_HEADLINE_LENGTH, MAX_INTRO_TEXT_LENGTH } from "lib/limits";
 import { generateAllOptions, GeneratedOptions } from "lib/openai-queries";
 import { getLandingPageText } from "lib/page-content";
@@ -237,15 +237,19 @@ export default class App extends React.Component<Props, State> {
         };
 
         const onCreateCampaign = async () => {
-            if (this.state.postHeaders !== null) {
-                const id = await uploadImage(
-                    this.state.generatedOptions?.imageUrls[0] || "",
-                    this.state.postHeaders
-                );
-                alert(id);
-            } else {
-                alert("no post headers");
+            if (this.state.postHeaders === null || this.state.generatedOptions === null) {
+                console.error("missing state");
+                console.error(this.state);
+                return;
             }
+            const id = await createCampaignAndAds(
+                `Generated Campaign - ${Date.now()}`,
+                this.state.urlInput,
+                this.state.ads,
+                this.state.generatedOptions,
+                this.state.postHeaders
+            );
+            alert(id);
         };
 
         return (
