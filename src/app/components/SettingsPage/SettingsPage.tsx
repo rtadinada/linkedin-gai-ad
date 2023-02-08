@@ -4,6 +4,7 @@ import React from "react";
 type Props = Record<string, never>;
 type State = {
     campaignGroupInput: string;
+    openAiKeyInput: string;
 };
 
 function extractDigits(input: string): string {
@@ -18,17 +19,23 @@ function extractDigits(input: string): string {
 }
 
 export default class SettingsPage extends React.Component<Props, State> {
-    state = { campaignGroupInput: "" };
+    state = { campaignGroupInput: "", openAiKeyInput: "" };
 
     async componentWillMount() {
-        const campaignGroup = await Settings.getCampaignGroup();
+        const [campaignGroup, openAiKey] = await Promise.all([
+            Settings.getCampaignGroup(),
+            Settings.getOpenAiKey(),
+        ]);
         const campaignGroupString = campaignGroup > 0 ? campaignGroup.toString() : "";
-        this.setState({ campaignGroupInput: campaignGroupString });
+        this.setState({ campaignGroupInput: campaignGroupString, openAiKeyInput: openAiKey });
     }
 
     save = async () => {
         console.log("save");
-        await Promise.all([Settings.setCampaignGroup(Number(this.state.campaignGroupInput))]);
+        await Promise.all([
+            Settings.setCampaignGroup(Number(this.state.campaignGroupInput)),
+            Settings.setOpenAiKey(this.state.openAiKeyInput),
+        ]);
     };
 
     render(): React.ReactNode {
@@ -45,6 +52,20 @@ export default class SettingsPage extends React.Component<Props, State> {
                                     onChange={(e) =>
                                         this.setState({
                                             campaignGroupInput: extractDigits(e.target.value),
+                                        })
+                                    }
+                                ></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Open AI Key: </td>
+                            <td>
+                                <input
+                                    type="text"
+                                    value={this.state.openAiKeyInput}
+                                    onChange={(e) =>
+                                        this.setState({
+                                            openAiKeyInput: e.target.value,
                                         })
                                     }
                                 ></input>

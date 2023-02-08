@@ -1,3 +1,0 @@
-export function getOpenApiKey(): string {
-    return "OPEN_API_KEY";
-}

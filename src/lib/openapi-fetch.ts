@@ -1,12 +1,12 @@
-import { getOpenApiKey } from "config/config";
+import * as Settings from "lib/settings";
 
-const API_KEY = getOpenApiKey();
+async function createPostHeaders() {
+    return {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await Settings.getOpenAiKey()}`,
+    };
+}
 
-const POST_HEADERS_OBJ = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${API_KEY}`,
-};
-const POST_HEADERS = new Headers(POST_HEADERS_OBJ);
 const COMPLETETION_ENDPOINT = "https://api.openai.com/v1/completions";
 const IMAGE_ENDPOINT = "https://api.openai.com/v1/images/generations";
 
@@ -52,7 +52,6 @@ async function throwBadResponseCode(
     console.error({
         requestBody,
         requestOptions,
-        headersObj: POST_HEADERS_OBJ,
         responseText,
         responseJson,
     });
@@ -72,7 +71,7 @@ async function makeCompletionQuery(
     };
     const requestOptions = {
         method: "POST",
-        headers: POST_HEADERS,
+        headers: await createPostHeaders(),
         body: JSON.stringify(requestBody),
     };
 
@@ -91,7 +90,7 @@ async function makeImageQuery(prompt: string, numResponses: number): Promise<Ima
     };
     const requestOptions = {
         method: "POST",
-        headers: POST_HEADERS,
+        headers: await createPostHeaders(),
         body: JSON.stringify(requestBody),
     };
 
