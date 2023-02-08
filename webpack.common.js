@@ -69,6 +69,11 @@ const config = {
                     to: buildDir,
                     force: true,
                 },
+                {
+                    from: "src/icons",
+                    to: path.resolve(buildDir, "icons"),
+                    force: true,
+                },
             ],
         }),
     ],
