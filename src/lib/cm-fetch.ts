@@ -1,7 +1,6 @@
 import { getAccountId, getCampaignGroupId, getCompanyId } from "./account-info";
 import { downloadImage } from "./background-fetch";
-
-const CAMPAIGN_GROUP = 627520796;
+import { fetchWithRetry } from "./fetch";
 
 function extractId(text: string) {
     const matches = text.match(/\d+/);
@@ -80,7 +79,7 @@ export async function createCampaign(name: string, postHeaders: object): Promise
     };
     console.log({ requestBody, options });
 
-    const response = await fetch(
+    const response = await fetchWithRetry(
         "https://www.linkedin.com/campaign-manager-api/campaignManagerCampaigns",
         options
     );
@@ -123,7 +122,7 @@ async function uploadImage(url: string, postHeaders: object): Promise<string> {
         credentials: "include",
     };
 
-    const response = await fetch(
+    const response = await fetchWithRetry(
         "https://www.linkedin.com/campaign-manager-api/campaignManagerVectorAssetMetadata?action=registerMediaUpload",
         options
     );
@@ -152,7 +151,7 @@ async function uploadImage(url: string, postHeaders: object): Promise<string> {
         credentials: "include",
     };
 
-    const uploadResponse = await fetch(registerData.singleUploadUrl, uploadOptions);
+    const uploadResponse = await fetchWithRetry(registerData.singleUploadUrl, uploadOptions);
     await errorOnBadStatus(uploadResponse, {}, params, options);
 
     return registerData.urn;
@@ -211,7 +210,7 @@ export async function createAd(
         credentials: "include",
     };
 
-    const response = await fetch(
+    const response = await fetchWithRetry(
         "https://www.linkedin.com/campaign-manager-api/campaignManagerCreatives",
         options
     );

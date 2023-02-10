@@ -6,6 +6,10 @@ export function removeTabNewline(s: string): string {
     return s.replace(/[\n\t\xa0]/g, "");
 }
 
+export function collapseWhitespace(str: string): string {
+    return str.replace(/\s{2,}/g, " ");
+}
+
 export function removeDoubleQuotes(s: string) {
     return s.replace(/\"/g, "");
 }

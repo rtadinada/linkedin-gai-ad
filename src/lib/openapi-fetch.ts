@@ -1,5 +1,7 @@
 import * as Settings from "lib/settings";
 
+import { fetchWithRetry } from "./fetch";
+
 async function createPostHeaders() {
     return {
         "Content-Type": "application/json",
@@ -75,7 +77,7 @@ async function makeCompletionQuery(
         body: JSON.stringify(requestBody),
     };
 
-    const response = await fetch(COMPLETETION_ENDPOINT, requestOptions);
+    const response = await fetchWithRetry(COMPLETETION_ENDPOINT, requestOptions);
     if (response.status !== 200) {
         await throwBadResponseCode(requestBody, requestOptions, response);
     }
@@ -94,7 +96,7 @@ async function makeImageQuery(prompt: string, numResponses: number): Promise<Ima
         body: JSON.stringify(requestBody),
     };
 
-    const response = await fetch(IMAGE_ENDPOINT, requestOptions);
+    const response = await fetchWithRetry(IMAGE_ENDPOINT, requestOptions);
     if (response.status !== 200) {
         await throwBadResponseCode(requestBody, requestOptions, response);
     }
