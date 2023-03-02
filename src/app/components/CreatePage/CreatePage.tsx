@@ -7,6 +7,7 @@ import ClickableIcon from "components/ClickableIcon/ClickableIcon";
 import EditableText, { FontSize } from "components/EditableText/EditableText";
 import Page from "components/Page/Page";
 import { getResourceUrl } from "lib/chrome-utils";
+import { getHeadlineIntroOverlayUrl } from "lib/cm-queries";
 import { GeneratedOptions } from "lib/openai-queries";
 import { range } from "lib/util";
 import React from "react";
@@ -171,6 +172,9 @@ export default function CreatePage(props: Props): JSX.Element {
         const carouselElementCreator = imageElementCreatorCreator(opts);
         return createCarouselSection({ ...opts, carouselElementCreator });
     };
+
+    const { overlayText } = getHeadlineIntroOverlayUrl(props.options, props.ads[props.selectedAd]);
+    console.log(overlayText);
 
     return (
         <Page justifyContent="flex-start">

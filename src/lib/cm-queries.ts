@@ -3,7 +3,7 @@ import { AdSelection } from "components/CreatePage/CreatePage";
 import { createAd, createCampaign } from "./cm-fetch";
 import { GeneratedOptions } from "./openai-queries";
 
-function getHeadlineIntoUrl(options: GeneratedOptions, ad: AdSelection) {
+export function getHeadlineIntroOverlayUrl(options: GeneratedOptions, ad: AdSelection) {
     const headlineIndex = ad.headlineIndex;
     let headline = ad.headlineOverwrites.get(headlineIndex);
     if (!headline || headline === "") {
@@ -16,9 +16,16 @@ function getHeadlineIntoUrl(options: GeneratedOptions, ad: AdSelection) {
         introText = options.introTexts[introTextIndex];
     }
 
+    const overlayTextIndex = ad.overlayTextIndex;
+    let overlayText = options.overlayTexts[overlayTextIndex];
+    if (ad.overlayTextOverwrites.has(overlayTextIndex)) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        overlayText = ad.overlayTextOverwrites.get(overlayTextIndex)!;
+    }
+
     const url = options.imageUrls[ad.imageIndex];
 
-    return { headline, introText, url };
+    return { headline, introText, overlayText, url };
 }
 
 async function createAdFromSelection(
@@ -28,7 +35,7 @@ async function createAdFromSelection(
     ad: AdSelection,
     postHeaders: object
 ): Promise<number> {
-    const { headline, introText, url } = getHeadlineIntoUrl(options, ad);
+    const { headline, introText, url } = getHeadlineIntroOverlayUrl(options, ad);
     return createAd(
         campaignId,
         `Generated Ad ${Date.now()}`,

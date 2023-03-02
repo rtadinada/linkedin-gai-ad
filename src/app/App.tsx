@@ -148,17 +148,11 @@ function updateOverlayTextOverwrite(prevState: State, overlayTextIndex: number, 
 function selectOverlayText(prevState: State, newOverlayTextIndex: number) {
     const adIndex = prevState.selectedAd;
     const prevAd = prevState.ads[adIndex];
-    const prevIndex = prevAd.overlayTextIndex;
 
-    let newAd: AdSelection = {
+    const newAd: AdSelection = {
         ...prevAd,
         overlayTextIndex: newOverlayTextIndex,
     };
-    if (newAd.overlayTextOverwrites.get(prevIndex) === "") {
-        const newOverwites = new Map(prevState.ads[adIndex].overlayTextOverwrites);
-        newOverwites.delete(prevIndex);
-        newAd = { ...newAd, overlayTextOverwrites: newOverwites };
-    }
 
     return updateAd(prevState, adIndex, newAd);
 }
