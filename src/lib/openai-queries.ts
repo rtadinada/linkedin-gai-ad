@@ -1,7 +1,7 @@
 import * as Settings from "lib/settings";
 
 import { makeChatGPTQuery, makeDallEQuery } from "./background-fetch";
-import { MAX_HEADLINE_LENGTH, MAX_INTRO_TEXT_LENGTH } from "./limits";
+import { MAX_HEADLINE_LENGTH, MAX_INTRO_TEXT_LENGTH, MAX_OVERLAY_TEXT_LENGTH } from "./limits";
 import { removeDoubleQuotes, removeTabNewline } from "./util";
 
 const NUM_OPTIONS = 5;
@@ -26,6 +26,12 @@ async function makeIntroTextPrompt() {
     return `${createCharacterPrompt(
         MAX_INTRO_TEXT_LENGTH
     )}, ${await Settings.getIntroTextPrompt()} the product described above:`;
+}
+
+async function makeOverlayTextPrompt() {
+    return `${createCharacterPrompt(
+        MAX_OVERLAY_TEXT_LENGTH
+    )}, ${await Settings.getOverlayTextPrompt()} the product described above:`;
 }
 
 async function makeImagePromptPrompt() {
@@ -54,6 +60,7 @@ export type GeneratedOptions = {
     campaignName: string;
     headlines: string[];
     introTexts: string[];
+    overlayTexts: string[];
     imageUrls: string[];
 };
 
@@ -102,6 +109,19 @@ export async function generateIntroText(content: string): Promise<string[] | nul
     );
 }
 
+export async function generateOverlayText(content: string): Promise<string[] | null> {
+    const prompt = makePrompt(content, await makeOverlayTextPrompt());
+
+    const responses = await makeChatGPTQuery(
+        prompt,
+        getNumTokens(MAX_OVERLAY_TEXT_LENGTH),
+        NUM_OPTIONS
+    );
+    return (
+        responses?.map(removeTabNewline).map((r) => r.substring(0, MAX_OVERLAY_TEXT_LENGTH)) || null
+    );
+}
+
 async function generateImagePrompt(content: string): Promise<string | null> {
     const prePrompt = makePrompt(content, await makeImagePromptPrompt());
     const results = await makeChatGPTQuery(prePrompt, 500, 1);
@@ -128,13 +148,20 @@ export async function generateImages(content: string): Promise<string[] | null> 
 }
 
 export async function generateAllOptions(content: string): Promise<GeneratedOptions | null> {
-    const [campaignName, headlines, introTexts, imageUrls] = await Promise.all([
+    const [campaignName, headlines, introTexts, overlayTexts, imageUrls] = await Promise.all([
         generateCampaignName(content),
         generateHeadlines(content),
         generateIntroText(content),
+        generateOverlayText(content),
         generateImages(content),
     ]);
-    if (campaignName === null || headlines === null || introTexts === null || imageUrls === null) {
+    if (
+        campaignName === null ||
+        headlines === null ||
+        introTexts === null ||
+        overlayTexts === null ||
+        imageUrls === null
+    ) {
         return null;
     }
 
@@ -142,6 +169,7 @@ export async function generateAllOptions(content: string): Promise<GeneratedOpti
         campaignName,
         headlines,
         introTexts,
+        overlayTexts,
         imageUrls,
     };
 }

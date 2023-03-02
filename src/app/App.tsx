@@ -3,7 +3,7 @@ import GeneratePage from "components/GeneratePage/GeneratePage";
 import Modal, { ModalSize } from "components/Modal/Modal";
 import { getPostHeaders } from "lib/background-fetch";
 import { createCampaignAndAds } from "lib/cm-queries";
-import { MAX_HEADLINE_LENGTH, MAX_INTRO_TEXT_LENGTH } from "lib/limits";
+import { MAX_HEADLINE_LENGTH, MAX_INTRO_TEXT_LENGTH, MAX_OVERLAY_TEXT_LENGTH } from "lib/limits";
 import { generateAllOptions, GeneratedOptions } from "lib/openai-queries";
 import { getLandingPageText } from "lib/page-content";
 import { removeTabNewline } from "lib/util";
@@ -27,9 +27,11 @@ function makeNewAdSelection(): AdSelection {
     return {
         headlineIndex: 0,
         introTextIndex: 0,
+        overlayTextIndex: 0,
         imageIndex: 0,
         headlineOverwrites: new Map(),
         introTextOverwrites: new Map(),
+        overlayTextOverwrites: new Map(),
     };
 }
 function makeInitialState(): State {
@@ -125,6 +127,42 @@ function selectIntroText(prevState: State, newIntroTextIndex: number) {
     return updateAd(prevState, adIndex, newAd);
 }
 
+function updateOverlayTextOverwrite(prevState: State, overlayTextIndex: number, overwrite: string) {
+    const adIndex = prevState.selectedAd;
+
+    const newOverwites = new Map(prevState.ads[adIndex].overlayTextOverwrites);
+    if (overwrite !== prevState.generatedOptions?.overlayTexts[overlayTextIndex]) {
+        newOverwites.set(overlayTextIndex, overwrite);
+    } else {
+        newOverwites.delete(overlayTextIndex);
+    }
+
+    const newAd: AdSelection = {
+        ...prevState.ads[adIndex],
+        overlayTextOverwrites: newOverwites,
+    };
+
+    return updateAd(prevState, adIndex, newAd);
+}
+
+function selectOverlayText(prevState: State, newOverlayTextIndex: number) {
+    const adIndex = prevState.selectedAd;
+    const prevAd = prevState.ads[adIndex];
+    const prevIndex = prevAd.overlayTextIndex;
+
+    let newAd: AdSelection = {
+        ...prevAd,
+        overlayTextIndex: newOverlayTextIndex,
+    };
+    if (newAd.overlayTextOverwrites.get(prevIndex) === "") {
+        const newOverwites = new Map(prevState.ads[adIndex].overlayTextOverwrites);
+        newOverwites.delete(prevIndex);
+        newAd = { ...newAd, overlayTextOverwrites: newOverwites };
+    }
+
+    return updateAd(prevState, adIndex, newAd);
+}
+
 function selectImage(prevState: State, newImageIndex: number) {
     const adIndex = prevState.selectedAd;
     const prevAd = prevState.ads[adIndex];
@@ -199,6 +237,17 @@ export default class App extends React.Component<Props, State> {
         };
         const onChangeSelectedIntroText = (newIndex: number) => {
             this.setState((prevState) => selectIntroText(prevState, newIndex));
+        };
+
+        const onOverlayTextOverwrite: OverwriteFunc = (optionIndex, value) => {
+            value = removeTabNewline(value);
+            if (value.length > MAX_OVERLAY_TEXT_LENGTH) {
+                return;
+            }
+            this.setState((prevState) => updateOverlayTextOverwrite(prevState, optionIndex, value));
+        };
+        const onChangeSelectedOverlayText = (newIndex: number) => {
+            this.setState((prevState) => selectOverlayText(prevState, newIndex));
         };
 
         const onChangeSelectedImage = (newIndex: number) => {
@@ -291,6 +340,8 @@ export default class App extends React.Component<Props, State> {
                             onChangeSelectedHeadline={onChangeSelectedHeadline}
                             onIntroTextOverwrite={onIntroTextOverwrite}
                             onChangeSelectedIntroText={onChangeSelectedIntroText}
+                            onOverlayTextOverwrite={onOverlayTextOverwrite}
+                            onChangeSelectedOverlayText={onChangeSelectedOverlayText}
                             onChangeSelectedImage={onChangeSelectedImage}
                             onSelectAd={onSelectAd}
                             onCreateNewAd={onCreateNewAd}

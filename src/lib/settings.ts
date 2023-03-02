@@ -14,6 +14,9 @@ const HEADLINE_PROMPT_DEFAULT = "write a compelling headline to sell";
 const INTRO_TEXT_PROMPT_OPTION = "INTRO_TEXT_PROMPT_OPTION";
 const INTRO_TEXT_PROMPT_DEFAULT = "write compelling ad copy to sell";
 
+const OVERLAY_TEXT_PROMPT_OPTION = "OVERLAY_TEXT_PROMPT_OPTION";
+const OVERLAY_TEXT_PROMPT_DEFAULT = "write a catchy five-word tag for";
+
 const IMAGE_PROMPT_PROMPT_OPTION = "IMAGE_PROMPT_PROMPT_OPTION";
 const IMAGE_PROMPT_PROMPT_DEFAULT =
     "In 15 words or less, without using the names of any products, describe a scene in a artistic building that includes a view of nature with someone happily making something";
@@ -86,6 +89,14 @@ export async function getIntroTextPrompt(): Promise<string> {
 
 export async function setIntroTextPrompt(value: string): Promise<boolean> {
     return await saveOption(INTRO_TEXT_PROMPT_OPTION, value);
+}
+
+export async function getOverlayTextPrompt(): Promise<string> {
+    return getOption(OVERLAY_TEXT_PROMPT_OPTION, OVERLAY_TEXT_PROMPT_DEFAULT);
+}
+
+export async function setOverlayTextPrompt(value: string): Promise<boolean> {
+    return await saveOption(OVERLAY_TEXT_PROMPT_OPTION, value);
 }
 
 export async function getImagePromptPrompt(): Promise<string> {

@@ -25,6 +25,8 @@ export type Props = {
     onChangeSelectedHeadline: (index: number) => void;
     onIntroTextOverwrite: OverwriteFunc;
     onChangeSelectedIntroText: (index: number) => void;
+    onOverlayTextOverwrite: OverwriteFunc;
+    onChangeSelectedOverlayText: (index: number) => void;
     onChangeSelectedImage: (index: number) => void;
     onSelectAd: (index: number) => void;
     onCreateNewAd: () => void;
@@ -35,9 +37,11 @@ export type Props = {
 export type AdSelection = {
     headlineIndex: number;
     introTextIndex: number;
+    overlayTextIndex: number;
     imageIndex: number;
     headlineOverwrites: Map<number, string>;
     introTextOverwrites: Map<number, string>;
+    overlayTextOverwrites: Map<number, string>;
 };
 
 export default function CreatePage(props: Props): JSX.Element {
@@ -184,6 +188,18 @@ export default function CreatePage(props: Props): JSX.Element {
                 arrowClass: style.headlineArrow,
                 carouselContainerClass: style.headlineInputContainer,
                 carouselAlign: "flex-end",
+            })}
+            {createTextInputCarousel({
+                options: props.options.overlayTexts,
+                fontSize: FontSize.SMALL,
+                overwritesGetter: (ad) => ad.overlayTextOverwrites,
+                onOverwrite: props.onOverlayTextOverwrite,
+                indexGetter: (ad) => ad.overlayTextIndex,
+                onChangeIndex: props.onChangeSelectedOverlayText,
+                sectionContainerClass: style.overlayTextSectionContainer,
+                arrowClass: style.overlayTextArrow,
+                carouselContainerClass: style.overlayTextInputContainer,
+                carouselAlign: "flex-start",
             })}
             {createImageCarousel({
                 options: props.options.imageUrls,

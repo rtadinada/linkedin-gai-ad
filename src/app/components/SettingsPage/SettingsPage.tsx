@@ -10,6 +10,7 @@ type State = {
     campaignNamePromptInput: string;
     headlinePromptInput: string;
     introTextPromptInput: string;
+    overlayTextPromptInput: string;
     imagePromptPromptInput: string;
     imageStylesInput: string;
 };
@@ -32,6 +33,7 @@ export default class SettingsPage extends React.Component<Props, State> {
         campaignNamePromptInput: "",
         headlinePromptInput: "",
         introTextPromptInput: "",
+        overlayTextPromptInput: "",
         imagePromptPromptInput: "",
         imageStylesInput: "",
     };
@@ -43,6 +45,7 @@ export default class SettingsPage extends React.Component<Props, State> {
             campaignNamePrompt,
             headlinePrompt,
             introTextPrompt,
+            overlayTextPrompt,
             imagePromptPrompt,
             imageStyles,
         ] = await Promise.all([
@@ -51,6 +54,7 @@ export default class SettingsPage extends React.Component<Props, State> {
             Settings.getCampaignNamePrompt(),
             Settings.getHeadlinePrompt(),
             Settings.getIntroTextPrompt(),
+            Settings.getOverlayTextPrompt(),
             Settings.getImagePromptPrompt(),
             Settings.getImageStyles(),
         ]);
@@ -61,6 +65,7 @@ export default class SettingsPage extends React.Component<Props, State> {
             campaignNamePromptInput: campaignNamePrompt,
             headlinePromptInput: headlinePrompt,
             introTextPromptInput: introTextPrompt,
+            overlayTextPromptInput: overlayTextPrompt,
             imagePromptPromptInput: imagePromptPrompt,
             imageStylesInput: JSON.stringify(imageStyles),
         });
@@ -87,6 +92,7 @@ export default class SettingsPage extends React.Component<Props, State> {
             Settings.setCampaignNamePrompt(this.state.campaignNamePromptInput),
             Settings.setHeadlinePrompt(this.state.headlinePromptInput),
             Settings.setIntroTextPrompt(this.state.introTextPromptInput),
+            Settings.setOverlayTextPrompt(this.state.overlayTextPromptInput),
             Settings.setImagePromptPrompt(this.state.imagePromptPromptInput),
             Settings.setImageStyles(imageStylesArr),
         ]);
@@ -176,6 +182,25 @@ export default class SettingsPage extends React.Component<Props, State> {
                                         onChange={(e) =>
                                             this.setState({
                                                 introTextPromptInput: e.target.value,
+                                            })
+                                        }
+                                    ></input>
+                                </span>
+                                &nbsp; the product described above:
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Overlay Text Prompt: </td>
+                            <td>
+                                In 75 characters or less, &nbsp;
+                                <span>
+                                    <input
+                                        className={style.promptInput}
+                                        type="text"
+                                        value={this.state.overlayTextPromptInput}
+                                        onChange={(e) =>
+                                            this.setState({
+                                                overlayTextPromptInput: e.target.value,
                                             })
                                         }
                                     ></input>
