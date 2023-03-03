@@ -35,13 +35,15 @@ async function createAdFromSelection(
     ad: AdSelection,
     postHeaders: object
 ): Promise<number> {
-    const { headline, introText, url } = getHeadlineIntroOverlayUrl(options, ad);
+    const { headline, introText, overlayText, url } = getHeadlineIntroOverlayUrl(options, ad);
+
     return createAd(
         campaignId,
         `Generated Ad ${Date.now()}`,
         landingPageUrl,
         headline,
         introText,
+        overlayText,
         url,
         postHeaders
     );

@@ -155,3 +155,19 @@
 .rightSideButton {
     margin-left: 15px;
 }
+
+.overlayContainer {
+    position: relative;
+}
+
+.theText {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    user-select: none;
+    color: #fff;
+    -webkit-text-fill-color: white; /* Will override color (regardless of order) */
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+    font: bold 35px Helvetica;
+}

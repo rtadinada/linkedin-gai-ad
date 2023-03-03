@@ -1,5 +1,5 @@
 import { getAccountId, getCampaignGroupId, getCompanyId } from "./account-info";
-import { downloadImage } from "./background-fetch";
+import { downloadImage, downloadOverlayImage } from "./background-fetch";
 import { fetchWithRetry } from "./fetch";
 
 function extractId(text: string) {
@@ -93,10 +93,15 @@ export async function createCampaign(name: string, postHeaders: object): Promise
     return extractId(location);
 }
 
-async function uploadImage(url: string, postHeaders: object): Promise<string> {
+async function uploadImage(url: string, overlayText: string, postHeaders: object): Promise<string> {
     const params = { url, postHeaders };
 
-    const blob = await downloadImage(url);
+    let blob: Blob | null;
+    if (!overlayText) {
+        blob = await downloadImage(url);
+    } else {
+        blob = await downloadOverlayImage(url, overlayText);
+    }
     if (!blob) {
         throw new Error(`Error getting image: ${url}`);
     }
@@ -163,10 +168,11 @@ export async function createAd(
     landingPageUrl: string,
     headline: string,
     introText: string,
+    overlayText: string,
     url: string,
     postHeaders: object
 ): Promise<number> {
-    const imageUrn = await uploadImage(url, postHeaders);
+    const imageUrn = await uploadImage(url, overlayText, postHeaders);
     const params = { campaign, name, headline, introText, url, postHeaders, imageUrn };
 
     const userGeneratedAdContent: UserGeneratedAdContent = {

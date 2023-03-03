@@ -48,6 +48,9 @@ export type AdSelection = {
 export default function CreatePage(props: Props): JSX.Element {
     const selectedAd = props.ads[props.selectedAd];
 
+    const { overlayText } = getHeadlineIntroOverlayUrl(props.options, props.ads[props.selectedAd]);
+    console.log(overlayText);
+
     type CarouselOptions = {
         options: string[];
         indexGetter: (ad: AdSelection) => number;
@@ -139,7 +142,12 @@ export default function CreatePage(props: Props): JSX.Element {
     const imageElementCreatorCreator = (
         opts: ImageInputCreatorOptions
     ): ((i: number) => JSX.Element) => {
-        return (i) => <img key={i} className={style.image} src={opts.options[i]} />;
+        return (i) => (
+            <div className={style.overlayContainer}>
+                <img key={i} className={style.image} src={opts.options[i]} />
+                <div className={style.theText}>{overlayText}</div>
+            </div>
+        );
     };
 
     type TextInputCarouselOptions = {
@@ -172,9 +180,6 @@ export default function CreatePage(props: Props): JSX.Element {
         const carouselElementCreator = imageElementCreatorCreator(opts);
         return createCarouselSection({ ...opts, carouselElementCreator });
     };
-
-    const { overlayText } = getHeadlineIntroOverlayUrl(props.options, props.ads[props.selectedAd]);
-    console.log(overlayText);
 
     return (
         <Page justifyContent="flex-start">
