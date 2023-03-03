@@ -104,6 +104,7 @@ export default function CreatePage(props: Props): JSX.Element {
     type TextInputCreatorOptions = {
         options: string[];
         fontSize: FontSize;
+        placeholderText?: string;
         overwritesGetter: (ad: AdSelection) => Map<number, string>;
         onOverwrite: OverwriteFunc;
     };
@@ -131,6 +132,7 @@ export default function CreatePage(props: Props): JSX.Element {
                     canReload={hasOverwrite}
                     onTextChange={onTextChange}
                     onReload={onReload}
+                    placeholderText={opts.placeholderText}
                 />
             );
         };
@@ -143,8 +145,8 @@ export default function CreatePage(props: Props): JSX.Element {
         opts: ImageInputCreatorOptions
     ): ((i: number) => JSX.Element) => {
         return (i) => (
-            <div className={style.overlayContainer}>
-                <img key={i} className={style.image} src={opts.options[i]} />
+            <div key={i} className={style.overlayContainer}>
+                <img className={style.image} src={opts.options[i]} />
                 <div className={style.theText}>{overlayText}</div>
             </div>
         );
@@ -153,6 +155,7 @@ export default function CreatePage(props: Props): JSX.Element {
     type TextInputCarouselOptions = {
         options: string[];
         fontSize: FontSize;
+        placeholderText?: string;
         overwritesGetter: (ad: AdSelection) => Map<number, string>;
         onOverwrite: OverwriteFunc;
         indexGetter: (ad: AdSelection) => number;
@@ -201,6 +204,7 @@ export default function CreatePage(props: Props): JSX.Element {
             {createTextInputCarousel({
                 options: props.options.overlayTexts,
                 fontSize: FontSize.SMALL,
+                placeholderText: "Enter for overlay...",
                 overwritesGetter: (ad) => ad.overlayTextOverwrites,
                 onOverwrite: props.onOverlayTextOverwrite,
                 indexGetter: (ad) => ad.overlayTextIndex,

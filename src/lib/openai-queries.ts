@@ -115,11 +115,14 @@ export async function generateOverlayText(content: string): Promise<string[] | n
     const responses = await makeChatGPTQuery(
         prompt,
         getNumTokens(MAX_OVERLAY_TEXT_LENGTH),
-        NUM_OPTIONS
+        NUM_OPTIONS - 1
     );
-    return (
-        responses?.map(removeTabNewline).map((r) => r.substring(0, MAX_OVERLAY_TEXT_LENGTH)) || null
-    );
+    const filteredResponses =
+        responses
+            ?.map(removeTabNewline)
+            .map((s) => s.replace(/\"/g, ""))
+            .map((r) => r.substring(0, MAX_OVERLAY_TEXT_LENGTH)) || [];
+    return responses !== null ? ["", ...filteredResponses] : null;
 }
 
 async function generateImagePrompt(content: string): Promise<string | null> {

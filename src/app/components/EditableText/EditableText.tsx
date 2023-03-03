@@ -12,6 +12,7 @@ export enum FontSize {
 
 export type Props = {
     text: string;
+    placeholderText?: string;
     fontSize: FontSize;
     canReload: boolean;
     onTextChange: React.ChangeEventHandler<HTMLTextAreaElement>;
@@ -19,6 +20,7 @@ export type Props = {
 };
 
 export default function EditableText(props: Props): JSX.Element {
+    const placeholderText = props.placeholderText || "";
     let inputRef: HTMLTextAreaElement | null = null;
 
     const fontClass = props.fontSize === FontSize.LARGE ? style.largeFont : style.smallFont;
@@ -33,6 +35,7 @@ export default function EditableText(props: Props): JSX.Element {
                 style={{ boxShadow: "none" }}
                 value={props.text}
                 onChange={props.onTextChange}
+                placeholder={placeholderText}
                 ref={(ref) => {
                     inputRef = ref;
                 }}
