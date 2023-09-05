@@ -1,4 +1,4 @@
-# AI Auto-Generate Campaign Chrome Extension
+# AI Auto-Generate LinkedIn Campaign Chrome Extension
 
 This is a Chrome extension that allows you to use GPT-3 and Dall-E to auto-generate ads
 on LinkedIn based on a landing page. This extension was originally built for a LinkedIn
@@ -11,7 +11,7 @@ creation with just a link to a landing page. Given the link, the extension will 
 contents of the site and use them as inputs to Open AI queries for ad copy and images.
 Then the advertiser is presented with 5 options for the headline, intro text, and image.
 They can select the combination they want, select multiple ads, and tweak the copy according 
-o their needs. After that, the campaign is automatically created for them and they're taken
+to their needs. After that, the campaign is automatically created for them and they're taken
 to the campaign's creatives page.
 
 ## Installing 
