@@ -26,7 +26,7 @@ To install the Chrome extension, do the following:
 6. (**Important**) Specify a LinkedIn _Campaign Group Id_ belonging to the account you are creating the campaign in (a hack because the extension doesn't have API access)
 7. Enter an OpenAI Key
 8, If you want, edit the prompts
-9, Navigate to the **Advertiser** tab in an account in LinkedIn's **Campaign Manager** (e.g. https://www.linkedin.com/campaignmanager/accounts/<advertiser-id>/campaign-groups), and you should see an **Auto-Generate** button with a green beaker
+9, Navigate to the **Advertiser** tab in an account in LinkedIn's **Campaign Manager** (e.g. https://www.linkedin.com/campaignmanager/accounts/_advertiser-id_/campaign-groups), and you should see an **Auto-Generate** button with a green beaker
 
 ## Usage
 
